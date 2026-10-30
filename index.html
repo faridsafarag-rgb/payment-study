@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Payment Decisions Study</title>
+<style>
+:root{
+  --brand:#0e7490; --brand-dark:#155e75; --brand-soft:#e0f2f7;
+  --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9; --card:#ffffff;
+  --accept:#0e7490; --decline:#ffffff; --warn:#b45309; --ok:#15803d; --bad:#b91c1c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%}
+#app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
+.topbar{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:18px 16px 22px}
+.topbar .row{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.2px}
+.logo .mark{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:15px}
+.progress{font-size:13px;opacity:.9}
+.balance{margin-top:14px}
+.balance small{opacity:.85;font-size:12px}
+.balance div{font-size:24px;font-weight:700;margin-top:2px}
+.content{padding:16px;flex:1}
+.card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.05);margin-bottom:14px}
+h1{font-size:21px;margin:0 0 10px}
+h2{font-size:17px;margin:0 0 10px}
+p{line-height:1.5;margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:disabled{background:#94a3b8;cursor:not-allowed}
+.btn-outline{background:#fff;color:var(--ink);border:1.5px solid #cbd5e1}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+ul.story{padding-left:18px;margin:6px 0 10px}
+ul.story li{margin-bottom:6px;line-height:1.4}
+/* request screen */
+.req-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.avatar{width:50px;height:50px;flex:0 0 50px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#fff}
+.avatar.personal{border-radius:50%;background:#7c8db5}
+.avatar.official{border-radius:12px;background:#334155}
+.req-name{font-weight:700;font-size:17px}
+.req-addr{font-size:14px;color:var(--muted);word-break:break-all}
+.amount{text-align:center;padding:14px 0 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:6px}
+.amount small{display:block;color:var(--muted);font-size:13px;margin-bottom:4px}
+.amount strong{font-size:32px;letter-spacing:-.5px}
+.amount strong span{font-size:16px;font-weight:600;color:var(--muted);margin-right:4px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv .k{color:var(--muted);flex:0 0 40%}
+.kv .v{text-align:right;font-weight:500;word-break:break-word}
+.note-official{text-transform:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 18px;border-radius:999px;font-size:15px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+/* questionnaire */
+.q{margin-bottom:22px}
+.q-title{font-weight:600;margin-bottom:10px;line-height:1.4}
+.q-hint{font-size:13px;color:var(--muted);margin:-6px 0 10px}
+.opt{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff;line-height:1.35}
+.opt input{width:18px;height:18px;accent-color:var(--brand);flex:0 0 18px}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale label{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 0;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;background:#fff;font-weight:600}
+.scale label.sel{border-color:var(--brand);background:var(--brand-soft)}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.anchors{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;gap:8px}
+.anchors span:last-child{text-align:right}
+textarea{width:100%;min-height:84px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;resize:vertical}
+textarea:focus{outline:2px solid var(--brand);border-color:transparent}
+.err{color:var(--bad);font-size:13px;margin-top:6px;display:none}
+.q.invalid .err{display:block}
+.section-tag{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
+.debrief-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.debrief-item:last-child{border-bottom:0}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px}
+.tag.gen{background:#dcfce7;color:var(--ok)}
+.tag.fr{background:#fee2e2;color:var(--bad)}
+.pid{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:18px;letter-spacing:1px}
+.check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;line-height:1.4}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--brand);flex:0 0 20px}
+.status{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =====================================================================
+   CONFIGURATION — paste your Google Apps Script web-app URL here
+   (see README.md, section "Connect Google Sheets").
+   ===================================================================== */
+const CONFIG = {
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",            // e.g. "https://script.google.com/macros/s/XXXX/exec"
+  STUDY_VERSION: "v2-8req",
+  START_BALANCE: 10000,
+  ONE_SESSION_PER_DEVICE: true
+};
+
+/* =====================================================================
+   EXPERIMENTAL DESIGN
+   8 scenarios = full 2x2x2 crossing of three surface cues:
+     urgency (no / yes) x amount (low / high) x presentation (personal / official)
+   Each scenario has a GENUINE and a FRAUDULENT version that are identical
+   (display name, amount, note, deadline, look) EXCEPT for the sender-identity
+   cue: wallet address, registered account name and history with that sender.
+   Each participant sees every scenario once: 4 randomly chosen as fraudulent,
+   4 as genuine, in random order.
+   ===================================================================== */
+const SCENARIOS = [
+  { id:"S1", label:"Mariam Hassan – Thursday dinner",
+    urgency:"No", amountLevel:"Low", presentation:"Personal",
+    displayName:"Mariam Hassan", initials:"MH", amount:180,
+    note:"Thursday dinner 🍕 your share", expiry:"Expires in 7 days", received:"2 hours ago",
+    genuine:{ address:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED",
+              history:"6 previous transactions · last on 12 Oct" },
+    fraud:{   address:"mariam.hasan22@pay", registeredName:"MOHAMED ABDELRAHMAN SAEED",
+              history:"No previous transactions" } },
+
+  { id:"S2", label:"Book Corner – delivery fee",
+    urgency:"No", amountLevel:"Low", presentation:"Official",
+    displayName:"Book Corner", initials:"BC", amount:35,
+    note:"DELIVERY FEE – ORDER #20417", expiry:"Expires in 7 days", received:"10 minutes ago",
+    genuine:{ address:"bookcorner@pay", registeredName:"BOOK CORNER BOOKSTORE",
+              history:"2 previous transactions · last on 26 Oct" },
+    fraud:{   address:"bookcorner.delivery@pay", registeredName:"MAHMOUD ADEL RAGAB",
+              history:"No previous transactions" } },
+
+  { id:"S3", label:"Youssef Tarek – money sent by mistake",
+    urgency:"No", amountLevel:"High", presentation:"Personal",
+    displayName:"Youssef Tarek", initials:"YT", amount:1500,
+    note:"sorry, sent you 1,500 by mistake yesterday 🤦‍♂️ can you send it back?", expiry:"Expires in 7 days", received:"1 hour ago",
+    genuine:{ address:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ",
+              history:"You received EGP 1,500 from this account yesterday" },
+    fraud:{   address:"youssef.tarek.eg@pay", registeredName:"AHMED SAMIR FATHY",
+              history:"No previous transactions" } },
+
+  { id:"S4", label:"Nada Housing – apartment deposit",
+    urgency:"No", amountLevel:"High", presentation:"Official",
+    displayName:"Nada Housing Services", initials:"NH", amount:2000,
+    note:"NOVEMBER DEPOSIT – APARTMENT 4B, NASR CITY", expiry:"Expires in 7 days", received:"Yesterday",
+    genuine:{ address:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES",
+              history:"1 previous transaction · last on 1 Oct" },
+    fraud:{   address:"nada.housing.office@pay", registeredName:"SHERIF NABIL ABDELHAMID",
+              history:"No previous transactions" } },
+
+  { id:"S5", label:"Omar Khaled – taxi share",
+    urgency:"Yes", amountLevel:"Low", presentation:"Personal",
+    displayName:"Omar Khaled", initials:"OK", amount:70,
+    note:"taxi share 🚕 please send it NOW, I'm at the cashier and short on balance!!", expiry:"Expires in 10 minutes", received:"Just now",
+    genuine:{ address:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA",
+              history:"9 previous transactions · last on 20 Oct" },
+    fraud:{   address:"omar.khaled.01@pay", registeredName:"AHMED KAMAL IBRAHIM",
+              history:"No previous transactions" } },
+
+  { id:"S6", label:"City Sports Club – membership",
+    urgency:"Yes", amountLevel:"Low", presentation:"Official",
+    displayName:"City Sports Club", initials:"CS", amount:150,
+    note:"MEMBERSHIP PAYMENT DUE TODAY – ACCESS SUSPENDED AFTER 23:59", expiry:"Expires in 15 minutes", received:"Just now",
+    genuine:{ address:"city.sports@pay", registeredName:"CITY SPORTS CLUB",
+              history:"5 previous transactions · last on 1 Oct" },
+    fraud:{   address:"citysports.club@pay", registeredName:"HAZEM MOHAMED ABDO",
+              history:"No previous transactions" } },
+
+  { id:"S7", label:"Laila Adel – pharmacy for mom",
+    urgency:"Yes", amountLevel:"High", presentation:"Personal",
+    displayName:"Laila Adel", initials:"LA", amount:1200,
+    note:"at the hospital with mom 😢 need 1,200 for the pharmacy RIGHT NOW please", expiry:"Expires in 10 minutes", received:"Just now",
+    genuine:{ address:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED",
+              history:"14 previous transactions · last on 24 Oct" },
+    fraud:{   address:"laila.adel7@pay", registeredName:"KARIM SAMY HELMY",
+              history:"No previous transactions" } },
+
+  { id:"S8", label:"Sea Breeze Travel Club – Alexandria trip",
+    urgency:"Yes", amountLevel:"High", presentation:"Official",
+    displayName:"Sea Breeze Travel Club", initials:"SB", amount:2450,
+    note:"FINAL NOTICE: ALEXANDRIA TRIP BOOKING CANCELLED UNLESS PAID WITHIN 15 MIN", expiry:"Expires in 15 minutes", received:"Just now",
+    genuine:{ address:"seabreeze.travel@pay", registeredName:"SEA BREEZE TRAVEL CLUB",
+              history:"1 previous transaction · last on 27 Oct" },
+    fraud:{   address:"seabreeze.bookings@pay", registeredName:"MAHMOUD FAROUK ZAKI",
+              history:"No previous transactions" } }
+];
+const N_FRAUD = 4; // 4 fraudulent + 4 genuine per participant
+
+/* =====================================================================
+   QUESTIONNAIRE (all after the 8 requests, so questions about scams
+   cannot prime behaviour in the task). Order: A -> B -> C -> Age (last).
+   ===================================================================== */
+const FREQ5 = ["Never","Rarely","Sometimes","Often","Always"];
+const SECTIONS = [
+  { tag:"Part A", title:"Your use of digital payment apps", questions:[
+    { key:"A1_usage_frequency", type:"single", text:"How frequently do you use digital payment applications?",
+      options:["Daily","Several times a week","About once a week","A few times a month","Less than once a month"] },
+    { key:"A2_usage_duration", type:"single", text:"How long have you been using digital payment applications?",
+      options:["Less than 6 months","6–12 months","1–2 years","3–5 years","More than 5 years"] },
+    { key:"A3_transaction_confidence", type:"scale", text:"How confident do you feel when making digital payment transactions?",
+      anchors:["Not at all confident","Very confident"] },
+    { key:"A4_suspicious_requests_seen", type:"single", text:"Have you previously encountered suspicious digital payment requests?",
+      options:["Never","Once","A few times","Many times","Not sure"] },
+    { key:"A5_scam_experience", type:"single", text:"Have you ever experienced or encountered a digital payment scam?",
+      options:["No","Yes – someone tried, but I did not lose money","Yes – I lost money","Prefer not to say"] }
+  ]},
+  { tag:"Part B", title:"Your usual habits", questions:[
+    { key:"B1_verify_sender", type:"single", text:"Do you normally verify the sender's identity before accepting a payment request?", options:FREQ5 },
+    { key:"B2_amount_importance", type:"scale", text:"How important is the requested amount when you decide whether to accept a payment request?",
+      anchors:["Not at all important","Extremely important"] },
+    { key:"B3_urgency_influence", type:"single", text:"How does urgent wording (for example “pay now” or a short deadline) affect your willingness to accept a payment request?",
+      options:["Makes me much less willing","Makes me somewhat less willing","No effect","Makes me somewhat more willing","Makes me much more willing"] },
+    { key:"B4_inspect_details", type:"single", text:"Do you normally inspect the information in a payment request before making a decision?", options:FREQ5 },
+    { key:"B5_detection_confidence", type:"scale", text:"How confident are you in distinguishing genuine payment requests from fraudulent ones?",
+      anchors:["Not at all confident","Very confident"] }
+  ]},
+  { tag:"Part C", title:"About the requests you just saw", questions:[
+    { key:"C1_top_factors", type:"multi", max:3, text:"Which factors influenced your decisions the most?", hint:"Choose up to 3.",
+      options:["Sender's display name","Wallet address","Registered account name","Previous transactions with the sender","Requested amount","Urgency or deadline","Wording of the note","Visual appearance of the request","Gut feeling","Other"] },
+    { key:"C2_difficult_requests", type:"multi", max:8, text:"Which payment requests were the most difficult to evaluate?", hint:"Choose all that apply.",
+      options:"__SCENARIOS__" },
+    { key:"C3_suspicion_signs", type:"text", text:"What signs made you suspicious of a payment request?", hint:"Write “none” if nothing made you suspicious." },
+    { key:"C4_decision_confidence", type:"scale", text:"How confident were you in the decisions you made?",
+      anchors:["Not at all confident","Very confident"] },
+    { key:"C5_main_reason", type:"text", text:"What was the main reason behind accepting or declining the requests?" }
+  ]},
+  { tag:"Last question", title:"About you", questions:[
+    { key:"age_range", type:"single", text:"What is your age range?",
+      options:["Under 18","18–24","25–34","35–44","45–54","55–64","65 or above","Prefer not to say"] }
+  ]}
+];
+
+/* =====================================================================
+   STATE + STORAGE HELPERS
+   ===================================================================== */
+const S = { pid:null, start:null, fraudSet:[], order:[], idx:0, shownAt:0,
+            decisions:[], answers:{}, balance:CONFIG.START_BALANCE, section:0, end:null };
+
+function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function load(k){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } }
+
+function makeId(){
+  const abc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s="";
+  const arr = new Uint32Array(6);
+  try{ crypto.getRandomValues(arr); }catch(e){ for(let i=0;i<6;i++) arr[i]=Math.floor(Math.random()*1e9); }
+  for(let i=0;i<6;i++) s+=abc[arr[i]%abc.length];
+  return "P-"+s;
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmt(n){ return n.toLocaleString("en-US"); }
+function nowIso(){ return new Date().toISOString(); }
+function deviceType(){ const ua=navigator.userAgent||""; return /iPhone|iPad|iPod/i.test(ua)?"iOS":/Android/i.test(ua)?"Android":/Mobi/i.test(ua)?"Other mobile":"Desktop"; }
+const $app = document.getElementById("app");
+function scrollTop(){ window.scrollTo(0,0); }
+
+/* =====================================================================
+   SENDING DATA TO GOOGLE SHEETS (with retry + on-device backup)
+   ===================================================================== */
+async function postOnce(payload){
+  const body = JSON.stringify(payload);
+  try{
+    const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+    const j = await r.json();
+    if(j && j.ok) return "ok";
+    throw new Error((j&&j.error)||"bad response");
+  }catch(e){
+    // Fallback for browsers that block reading the reply: send blind.
+    try{ await fetch(CONFIG.SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body}); return "unconfirmed"; }
+    catch(e2){ return "fail"; }
+  }
+}
+async function send(payload){
+  const queue = load("pending")||[];
+  queue.push(payload); store("pending", queue);
+  return flush();
+}
+async function flush(){
+  if(!CONFIG.SCRIPT_URL) return "no-url";
+  let queue = load("pending")||[]; let last="ok";
+  while(queue.length){
+    let res="fail";
+    for(let attempt=0; attempt<4 && res==="fail"; attempt++){
+      if(attempt) await new Promise(r=>setTimeout(r, 1500*attempt));
+      res = await postOnce(queue[0]);
+    }
+    if(res==="fail"){ last="fail"; break; }
+    if(res==="unconfirmed") last="unconfirmed";
+    queue.shift(); store("pending", queue);
+  }
+  return last;
+}
+window.addEventListener("online", ()=>{ flush(); });
+
+/* =====================================================================
+   DATA ROWS
+   ===================================================================== */
+function scoring(){
+  const d=S.decisions;
+  return {
+    n_correct: d.filter(x=>x.correct===1).length,
+    accuracy_pct: d.length? Math.round(100*d.filter(x=>x.correct===1).length/d.length) : "",
+    false_acceptances: d.filter(x=>x.error_type==="False acceptance").length,
+    false_rejections: d.filter(x=>x.error_type==="False rejection").length,
+    fraud_accept_rate_pct: Math.round(100*d.filter(x=>x.error_type==="False acceptance").length/N_FRAUD),
+    genuine_reject_rate_pct: Math.round(100*d.filter(x=>x.error_type==="False rejection").length/(SCENARIOS.length-N_FRAUD))
+  };
+}
+function participantRow(completed){
+  const a=S.answers, row={
+    participant_id:S.pid, study_version:CONFIG.STUDY_VERSION, start_time:S.start,
+    end_time: completed? S.end : "", duration_sec: completed? Math.round((new Date(S.end)-new Date(S.start))/1000) : "",
+    consent:"Yes", completed: completed?"Yes":"No (task done, questionnaire not finished)", device:deviceType(),
+    fraudulent_scenarios:S.fraudSet.join(";"), presentation_order:S.order.join(";"),
+    ...scoring()
+  };
+  SECTIONS.forEach(sec=>sec.questions.forEach(q=>{
+    let v=a[q.key]; if(Array.isArray(v)) v=v.join("; "); row[q.key]= (v===undefined? "" : v);
+  }));
+  return row;
+}
+
+/* =====================================================================
+   SCREENS
+   ===================================================================== */
+function topbar(right){
+  return `<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div><div class="progress">${right||""}</div></div>
+  <div class="balance"><small>Available balance</small><div>EGP ${fmt(S.balance)}</div></div></div>`;
+}
+
+function screenAlreadyDone(){
+  $app.innerHTML = `<div class="content"><div class="card"><h1>Thank you</h1>
+  <p>This device has already completed the study. Each person can take part once.</p></div></div>`;
+}
+
+function screenConsent(){
+  $app.innerHTML = `<div class="content" style="padding-top:28px">
+  <div class="card">
+    <h1>Payment Decisions Study</h1>
+    <p>This academic study looks at how people decide on money requests in digital payment apps. It takes about 8–10 minutes.</p>
+    <p><b>What you will do:</b> you will use a simulated payment app, receive 8 money requests and choose <b>Accept</b> or <b>Decline</b> for each one. Then you will answer a short questionnaire.</p>
+    <p><b>No real money</b> is involved and you will <b>never</b> be asked for a PIN, password or any banking details.</p>
+    <p><b>Your privacy:</b> participation is anonymous. You get a random code; we do not collect your name, phone number or any contact details. Answers are stored for research analysis only.</p>
+    <p>Taking part is voluntary and you may stop at any time by closing the page.</p>
+    <label class="check"><input type="checkbox" id="c1"> <span>I am 18 or older and I use a digital payment application.</span></label>
+    <label class="check"><input type="checkbox" id="c2"> <span>I have read the information above and agree to take part.</span></label>
+    <button class="btn btn-primary" id="go" disabled>Start</button>
+  </div></div>`;
+  const c1=document.getElementById("c1"), c2=document.getElementById("c2"), go=document.getElementById("go");
+  const upd=()=>{ go.disabled=!(c1.checked&&c2.checked); };
+  c1.onchange=upd; c2.onchange=upd;
+  go.onclick=()=>{
+    S.pid=makeId(); S.start=nowIso();
+    S.fraudSet = shuffle(SCENARIOS.map(s=>s.id)).slice(0,N_FRAUD).sort();
+    S.order = shuffle(SCENARIOS.map(s=>s.id));
+    screenBriefing();
+  };
+  scrollTop();
+}
+
+function screenBriefing(){
+  $app.innerHTML = topbar("") + `<div class="content">
+  <div class="card">
+    <h1>Your role</h1>
+    <p>In this study you are <b>Nour Adel</b>, a user of this payment app. This is what happened in Nour's life recently:</p>
+    <ul class="story">
+      <li>Had dinner with friends on Thursday and agreed to split the bill.</li>
+      <li>Ordered a book online from a bookshop (order #20417).</li>
+      <li>Booked a weekend trip to Alexandria with a travel club.</li>
+      <li>Is renting an apartment through a housing agency.</li>
+      <li>Is a member of a sports club and shares taxis with friends.</li>
+      <li>Has a sister, Laila, and friends who sometimes send or request money.</li>
+    </ul>
+    <p>You will now receive <b>8 money requests</b>. Everything you need is shown on each request screen.</p>
+    <p><b>Decide on each request as you normally would</b> in your own payment app: press <b>Accept</b> to pay or <b>Decline</b> to refuse.</p>
+  </div>
+  <button class="btn btn-primary" id="go">Open my requests</button></div>`;
+  document.getElementById("go").onclick=()=>{ S.idx=0; screenRequest(); };
+  scrollTop();
+}
+
+function currentScenario(){
+  const sc = SCENARIOS.find(s=>s.id===S.order[S.idx]);
+  const isFraud = S.fraudSet.includes(sc.id);
+  return { sc, isFraud, v: isFraud? sc.fraud : sc.genuine };
+}
+
+function screenRequest(){
+  const { sc, v } = currentScenario();
+  const official = sc.presentation==="Official";
+  $app.innerHTML = topbar(`Request ${S.idx+1} of ${SCENARIOS.length}`) + `<div class="content">
+  <div class="card" style="margin-top:-12px">
+    <div class="small muted" style="margin-bottom:12px">Money request · received ${esc(sc.received)}</div>
+    <div class="req-head">
+      <div class="avatar ${official?"official":"personal"}">${esc(sc.initials)}</div>
+      <div><div class="req-name">${esc(sc.displayName)}</div><div class="req-addr">${esc(v.address)}</div></div>
+    </div>
+    <div class="amount"><small>is requesting</small><strong><span>EGP</span>${fmt(sc.amount)}</strong></div>
+    <div class="kv"><div class="k">Registered account name</div><div class="v">${esc(v.registeredName)}</div></div>
+    <div class="kv"><div class="k">Note</div><div class="v ${official?"note-official":""}">${esc(sc.note)}</div></div>
+    <div class="kv"><div class="k">History with this account</div><div class="v">${esc(v.history)}</div></div>
+    <div class="kv"><div class="k">Request validity</div><div class="v">${esc(sc.expiry)}</div></div>
+    <div class="kv"><div class="k">Pay from</div><div class="v">nour.adel@pay</div></div>
+    <div class="kv"><div class="k">Fees</div><div class="v">EGP 0</div></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline" id="dec">Decline</button>
+    <button class="btn btn-primary" id="acc">Accept</button>
+  </div></div>`;
+  S.shownAt = performance.now();
+  document.getElementById("acc").onclick=()=>decide("Accept");
+  document.getElementById("dec").onclick=()=>decide("Decline");
+  scrollTop();
+}
+
+function decide(decision){
+  const rt = Math.round(performance.now()-S.shownAt);
+  const { sc, isFraud, v } = currentScenario();
+  const truth = isFraud? "Fraudulent" : "Genuine";
+  const correct = (truth==="Genuine" && decision==="Accept") || (truth==="Fraudulent" && decision==="Decline");
+  const error_type = correct? "None" : (truth==="Fraudulent"? "False acceptance" : "False rejection");
+  S.decisions.push({
+    timestamp: nowIso(), participant_id:S.pid, position:S.idx+1, scenario_id:sc.id, scenario_label:sc.label,
+    ground_truth:truth, decision, correct: correct?1:0, error_type, response_time_ms:rt,
+    display_name:sc.displayName, wallet_address:v.address, registered_name:v.registeredName,
+    history_with_sender:v.history, sender_identity_consistent: isFraud?"No":"Yes",
+    amount_egp:sc.amount, amount_level:sc.amountLevel, urgency:sc.urgency, presentation:sc.presentation,
+    note:sc.note, expiry:sc.expiry
+  });
+  if(decision==="Accept") S.balance -= sc.amount;
+  document.querySelectorAll(".btn").forEach(b=>b.disabled=true);
+  const t=document.createElement("div"); t.className="toast";
+  t.textContent = decision==="Accept"? `EGP ${fmt(sc.amount)} sent` : "Request declined";
+  document.body.appendChild(t);
+  setTimeout(()=>{
+    t.remove(); S.idx++;
+    if(S.idx < SCENARIOS.length) screenRequest();
+    else afterTask();
+  }, 900);
+}
+
+function afterTask(){
+  // Save the 8 decisions straight away (in case the questionnaire is not finished).
+  send({ participant: participantRow(false), decisions: S.decisions });
+  S.section=0; screenSection();
+}
+
+function scenarioOptions(){
+  return S.order.map((id,i)=>{ const sc=SCENARIOS.find(s=>s.id===id);
+    return { value:id, label:`Request ${i+1}: ${sc.displayName} – EGP ${fmt(sc.amount)}` }; })
+    .concat([{value:"None", label:"None were difficult"}]);
+}
+
+function renderQuestion(q){
+  let h=`<div class="q" data-key="${q.key}"><div class="q-title">${esc(q.text)}</div>`;
+  if(q.hint) h+=`<div class="q-hint">${esc(q.hint)}</div>`;
+  if(q.type==="single"){
+    q.options.forEach(o=>{ h+=`<label class="opt"><input type="radio" name="${q.key}" value="${esc(o)}"><span>${esc(o)}</span></label>`; });
+  } else if(q.type==="multi"){
+    const opts = q.options==="__SCENARIOS__"? scenarioOptions() : q.options.map(o=>({value:o,label:o}));
+    opts.forEach(o=>{ h+=`<label class="opt"><input type="checkbox" name="${q.key}" value="${esc(o.value)}"><span>${esc(o.label)}</span></label>`; });
+  } else if(q.type==="scale"){
+    h+=`<div class="scale">`+[1,2,3,4,5].map(n=>`<label><input type="radio" name="${q.key}" value="${n}">${n}</label>`).join("")+`</div>
+        <div class="anchors"><span>1 = ${esc(q.anchors[0])}</span><span>5 = ${esc(q.anchors[1])}</span></div>`;
+  } else if(q.type==="text"){
+    h+=`<textarea name="${q.key}" maxlength="600" placeholder="Type your answer"></textarea>`;
+  }
+  h+=`<div class="err">Please answer this question.</div></div>`;
+  return h;
+}
+
+function screenSection(){
+  const sec = SECTIONS[S.section];
+  const isLast = S.section===SECTIONS.length-1;
+  $app.innerHTML = `<div class="content" style="padding-top:22px"><div class="card">
+    <span class="section-tag">${esc(sec.tag)}</span><h1>${esc(sec.title)}</h1>
+    ${S.section===0?'<p class="muted small">Thank you – the payment requests are finished. A few short questions follow.</p>':""}
+    <form id="f">${sec.questions.map(renderQuestion).join("")}</form>
+    <button class="btn btn-primary" id="next">${isLast?"Submit":"Continue"}</button>
+    <div class="status" id="st"></div>
+  </div></div>`;
+
+  const form=document.getElementById("f");
+  // selection styling + multi max
+  form.addEventListener("change", e=>{
+    const inp=e.target, q=sec.questions.find(x=>x.key===inp.name);
+    if(q && q.type==="multi"){
+      const boxes=[...form.querySelectorAll(`input[name="${q.key}"]`)];
+      if(inp.value==="None" && inp.checked) boxes.forEach(b=>{ if(b!==inp) b.checked=false; });
+      else if(inp.checked) boxes.forEach(b=>{ if(b.value==="None") b.checked=false; });
+      if(boxes.filter(b=>b.checked).length>q.max){ inp.checked=false; }
+    }
+    form.querySelectorAll("label.opt, .scale label").forEach(l=>{ const i=l.querySelector("input"); l.classList.toggle("sel", i.checked); });
+    const qd=inp.closest(".q"); if(qd) qd.classList.remove("invalid");
+  });
+  form.addEventListener("input", e=>{ const qd=e.target.closest(".q"); if(qd) qd.classList.remove("invalid"); });
+
+  document.getElementById("next").onclick=async ()=>{
+    let firstBad=null;
+    sec.questions.forEach(q=>{
+      let val;
+      if(q.type==="multi") val=[...form.querySelectorAll(`input[name="${q.key}"]:checked`)].map(i=>i.value);
+      else if(q.type==="text") val=(form.querySelector(`textarea[name="${q.key}"]`).value||"").trim();
+      else { const c=form.querySelector(`input[name="${q.key}"]:checked`); val=c?c.value:""; if(q.type==="scale"&&val) val=Number(val); }
+      const empty = Array.isArray(val)? val.length===0 : val==="";
+      const qd=form.querySelector(`.q[data-key="${q.key}"]`);
+      if(empty){ qd.classList.add("invalid"); if(!firstBad) firstBad=qd; } else S.answers[q.key]=val;
+    });
+    if(firstBad){ firstBad.scrollIntoView({behavior:"smooth",block:"center"}); return; }
+    if(!isLast){ S.section++; screenSection(); scrollTop(); return; }
+
+    // Final submit
+    const btn=document.getElementById("next"), st=document.getElementById("st");
+    btn.disabled=true; btn.textContent="Saving…"; st.textContent="";
+    S.end=nowIso();
+    const res = await send({ participant: participantRow(true), decisions: S.decisions });
+    if(CONFIG.ONE_SESSION_PER_DEVICE) store("completed", S.pid);
+    screenDebrief(res);
+  };
+  scrollTop();
+}
+
+function screenDebrief(saveResult){
+  const items = S.decisions.map(d=>{
+    const sc=SCENARIOS.find(s=>s.id===d.scenario_id);
+    const gen=d.ground_truth==="Genuine";
+    const why = gen
+      ? `Genuine: the address <b>${esc(sc.genuine.address)}</b> and registered name matched ${esc(sc.displayName)}, and you had paid this account before.`
+      : `Fraudulent: the address <b>${esc(sc.fraud.address)}</b> imitated the real one (${esc(sc.genuine.address)}), the registered name was <b>${esc(sc.fraud.registeredName)}</b> instead of ${esc(sc.displayName)}, and there were no previous transactions.`;
+    return `<div class="debrief-item"><b>Request ${d.position}: ${esc(sc.displayName)} – EGP ${fmt(sc.amount)}</b>
+      <span class="tag ${gen?"gen":"fr"}">${gen?"Genuine":"Fraudulent"}</span><br>
+      <span class="muted">You chose ${d.decision} ${d.correct?"✓":"✗"}</span><br>${why}</div>`;
+  }).join("");
+  const sc = scoring();
+  const saveMsg = saveResult==="ok"||saveResult==="unconfirmed" ? "Your answers have been saved."
+    : saveResult==="no-url" ? "Researcher note: no Google Sheets link is configured, so data was kept on this device only."
+    : "Your answers are stored on this device and will be sent automatically when the connection returns. Please keep this page open for a moment.";
+  $app.innerHTML = `<div class="content" style="padding-top:22px">
+  <div class="card"><h1>Thank you!</h1>
+    <p>${saveMsg}</p>
+    <p class="small muted">Your anonymous participant code</p><p class="pid">${esc(S.pid)}</p>
+    <p class="small muted">Keep this code if you later want your data removed.</p></div>
+  <div class="card"><h2>What this study was about</h2>
+    <p>Some of the requests you saw were <b>fraudulent</b>. The study looks at which cues (sender, amount, urgency, wording, look) lead people to pay fake requests or to refuse real ones.</p>
+    <p>In this study the reliable cue was always the <b>sender's identity</b>: the exact wallet address, the registered account name and your history with that account. Urgency, amount and an official look appeared in genuine and fraudulent requests alike.</p>
+    <p>You answered <b>${sc.n_correct} of ${SCENARIOS.length}</b> correctly.</p>
+    ${items}</div>
+  <div class="card"><h2>How to protect yourself</h2>
+    <ul class="story">
+      <li>Check the registered account name and the exact address, character by character, before paying.</li>
+      <li>Be careful with requests from accounts you have never paid before, even if the display name looks familiar.</li>
+      <li>Treat pressure (“pay now”, short deadlines, emergencies) as a reason to slow down and confirm by calling the person.</li>
+      <li>A genuine company will never ask you to pay to “verify” or “unlock” your account.</li>
+    </ul></div></div>`;
+  scrollTop();
+}
+
+/* =====================================================================
+   START
+   ===================================================================== */
+(function init(){
+  flush();
+  if(CONFIG.ONE_SESSION_PER_DEVICE && load("completed") && !/[?&]reset=1/.test(location.search)) { screenAlreadyDone(); return; }
+  screenConsent();
+})();
+</script>
+</body>
+</html>
