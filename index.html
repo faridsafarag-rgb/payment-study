@@ -4,84 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#3b1a6b">
 <title>Payment Decisions Study</title>
 <style>
 :root{
-  --brand:#0e7490; --brand-dark:#155e75; --brand-soft:#e0f2f7;
-  --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9; --card:#ffffff;
-  --accept:#0e7490; --decline:#ffffff; --warn:#b45309; --ok:#15803d; --bad:#b91c1c;
+  --purple:#5b21b6; --purple-deep:#3b1a6b; --magenta:#c026d3; --navy:#141b3c;
+  --grad:linear-gradient(135deg,#3b1a6b 0%,#6d28d9 55%,#c026d3 100%);
+  --grad-btn:linear-gradient(135deg,#6d28d9,#c026d3);
+  --soft:#f4effc; --soft-2:#fbf7ff; --ink:#141b3c; --muted:#5f6684; --line:#e7e2f1;
+  --bg:#f6f4fa; --card:#ffffff; --ok:#15803d; --bad:#be123c;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  -webkit-text-size-adjust:100%}
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
 #app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
-.topbar{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:18px 16px 22px}
+@media (min-width:600px){ #app{margin:24px auto;min-height:calc(100vh - 48px);border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(59,26,107,.18)} }
+.topbar{background:var(--grad);color:#fff;padding:16px 18px 34px}
 .topbar .row{display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.2px}
-.logo .mark{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:15px}
-.progress{font-size:13px;opacity:.9}
-.balance{margin-top:14px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.3px;font-size:17px}
+.logo .mark{width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:14px}
+.pill{font-size:12px;font-weight:600;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:999px}
+.balance{margin-top:16px}
 .balance small{opacity:.85;font-size:12px}
-.balance div{font-size:24px;font-weight:700;margin-top:2px}
+.balance div{font-size:26px;font-weight:800;margin-top:2px;letter-spacing:-.3px}
+.bar{height:5px;background:rgba(255,255,255,.25);border-radius:999px;margin-top:14px;overflow:hidden}
+.bar span{display:block;height:100%;background:#fff;border-radius:999px;transition:width .3s}
+.plainbar{height:5px;background:var(--line);border-radius:999px;margin:0 0 16px;overflow:hidden}
+.plainbar span{display:block;height:100%;background:var(--grad-btn);border-radius:999px}
 .content{padding:16px;flex:1}
-.card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.05);margin-bottom:14px}
-h1{font-size:21px;margin:0 0 10px}
-h2{font-size:17px;margin:0 0 10px}
+.lift{margin-top:-22px}
+.card{background:var(--card);border-radius:20px;padding:18px;box-shadow:0 1px 2px rgba(20,27,60,.05),0 8px 24px rgba(59,26,107,.07);margin-bottom:14px}
+h1{font-size:21px;margin:0 0 10px;color:var(--navy)}
+h2{font-size:17px;margin:0 0 10px;color:var(--navy)}
 p{line-height:1.5;margin:0 0 10px}
-.muted{color:var(--muted)}
-.small{font-size:13px}
-.btn{display:block;width:100%;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-primary:disabled{background:#94a3b8;cursor:not-allowed}
-.btn-outline{background:#fff;color:var(--ink);border:1.5px solid #cbd5e1}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-ul.story{padding-left:18px;margin:6px 0 10px}
-ul.story li{margin-bottom:6px;line-height:1.4}
-/* request screen */
+.muted{color:var(--muted)} .small{font-size:13px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;letter-spacing:.3px}
+.btn-primary{background:var(--grad-btn);color:#fff;box-shadow:0 6px 16px rgba(192,38,211,.25)}
+.btn-primary:disabled{background:#c4bfd3;box-shadow:none;cursor:not-allowed}
+.btn-reject{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn-accept{background:var(--grad-btn);color:#fff;border:2px solid transparent}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line-height:1.4}
+.notif{display:flex;gap:10px;align-items:center;background:var(--soft);border-radius:14px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--navy)}
+.notif b{color:var(--purple)}
+.notif .dot{width:8px;height:8px;border-radius:50%;background:var(--magenta);flex:0 0 8px}
 .req-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.avatar{width:50px;height:50px;flex:0 0 50px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#fff}
-.avatar.personal{border-radius:50%;background:#7c8db5}
-.avatar.official{border-radius:12px;background:#334155}
-.req-name{font-weight:700;font-size:17px}
+.avatar{width:50px;height:50px;flex:0 0 50px;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff}
+.avatar.personal{border-radius:50%;background:#8b7bb8}
+.avatar.official{border-radius:14px;background:var(--navy)}
+.req-name{font-weight:800;font-size:17px;color:var(--navy)}
 .req-addr{font-size:14px;color:var(--muted);word-break:break-all}
 .amount{text-align:center;padding:14px 0 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:6px}
 .amount small{display:block;color:var(--muted);font-size:13px;margin-bottom:4px}
-.amount strong{font-size:32px;letter-spacing:-.5px}
-.amount strong span{font-size:16px;font-weight:600;color:var(--muted);margin-right:4px}
+.amount strong{font-size:34px;letter-spacing:-.5px;color:var(--navy)}
+.amount strong span{font-size:16px;font-weight:700;color:var(--muted);margin-right:4px}
 .kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
 .kv:last-child{border-bottom:0}
 .kv .k{color:var(--muted);flex:0 0 40%}
-.kv .v{text-align:right;font-weight:500;word-break:break-word}
-.note-official{text-transform:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 18px;border-radius:999px;font-size:15px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.25)}
-/* questionnaire */
+.kv .v{text-align:right;font-weight:600;word-break:break-word;color:var(--navy)}
+.note-official{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.mini{display:flex;align-items:center;gap:10px;background:var(--soft-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:16px}
+.mini .avatar{width:38px;height:38px;flex-basis:38px;font-size:14px}
+.badge{margin-left:auto;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;letter-spacing:.4px}
+.badge.acc{background:#f3e8ff;color:var(--purple)} .badge.rej{background:#e8eaf3;color:var(--navy)}
 .q{margin-bottom:22px}
-.q-title{font-weight:600;margin-bottom:10px;line-height:1.4}
+.q-title{font-weight:700;margin-bottom:10px;line-height:1.4;color:var(--navy)}
 .q-hint{font-size:13px;color:var(--muted);margin:-6px 0 10px}
-.opt{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff;line-height:1.35}
-.opt input{width:18px;height:18px;accent-color:var(--brand);flex:0 0 18px}
-.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.opt{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--line);border-radius:14px;margin-bottom:8px;cursor:pointer;background:#fff;line-height:1.35}
+.opt input{width:18px;height:18px;accent-color:var(--purple);flex:0 0 18px}
+.opt.sel{border-color:var(--purple);background:var(--soft)}
 .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.scale label{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 0;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;background:#fff;font-weight:600}
-.scale label.sel{border-color:var(--brand);background:var(--brand-soft)}
+.scale label{display:flex;align-items:center;justify-content:center;padding:12px 0;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;background:#fff;font-weight:700;position:relative}
+.scale label.sel{border-color:var(--purple);background:var(--soft);color:var(--purple)}
 .scale input{position:absolute;opacity:0;pointer-events:none}
 .anchors{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;gap:8px}
 .anchors span:last-child{text-align:right}
-textarea{width:100%;min-height:84px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;resize:vertical}
-textarea:focus{outline:2px solid var(--brand);border-color:transparent}
 .err{color:var(--bad);font-size:13px;margin-top:6px;display:none}
 .q.invalid .err{display:block}
-.section-tag{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
+.section-tag{display:inline-block;background:var(--soft);color:var(--purple);font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-size:15px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .debrief-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
 .debrief-item:last-child{border-bottom:0}
 .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px}
-.tag.gen{background:#dcfce7;color:var(--ok)}
-.tag.fr{background:#fee2e2;color:var(--bad)}
-.pid{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:18px;letter-spacing:1px}
+.tag.gen{background:#dcfce7;color:var(--ok)} .tag.fr{background:#ffe4e6;color:var(--bad)}
+.pid{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:800;font-size:18px;letter-spacing:1px;color:var(--purple)}
 .check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;line-height:1.4}
-.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--brand);flex:0 0 20px}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--purple);flex:0 0 20px}
 .status{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}
+.phone{flex:1;min-height:100vh;background:linear-gradient(180deg,#1b1442 0%,#141b3c 100%);padding:48px 16px 24px;display:flex;flex-direction:column;gap:16px}
+.ph-time{color:#fff;text-align:center;font-size:56px;font-weight:300;letter-spacing:1px}
+.ph-label{color:rgba(255,255,255,.65);text-align:center;font-size:13px;margin-top:-10px;margin-bottom:12px}
+.msgcard{background:rgba(255,255,255,.96);border-radius:20px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.msg-top{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--navy)}
+.chan{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:13px}
+.chan.wa{background:#dcfce7} .chan.sms{background:#e0e7ff}
+.msg-from{font-weight:800;margin:10px 0 6px;color:var(--navy)}
+.bubble{background:var(--soft);border-radius:4px 16px 16px 16px;padding:10px 12px;line-height:1.45;font-size:15px;color:var(--navy)}
+.phone .btn{margin-top:auto}
 </style>
 </head>
 <body>
@@ -89,107 +108,152 @@ textarea:focus{outline:2px solid var(--brand);border-color:transparent}
 
 <script>
 /* =====================================================================
-   CONFIGURATION — paste your Google Apps Script web-app URL here
-   (see README.md, section "Connect Google Sheets").
+   CONFIGURATION — Google Apps Script web-app URL (see README.md)
    ===================================================================== */
 const CONFIG = {
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",            // e.g. "https://script.google.com/macros/s/XXXX/exec"
-  STUDY_VERSION: "v2-8req",
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",
+  STUDY_VERSION: "v4-messages",
   START_BALANCE: 10000,
   ONE_SESSION_PER_DEVICE: true
 };
 
 /* =====================================================================
-   EXPERIMENTAL DESIGN
-   8 scenarios = full 2x2x2 crossing of three surface cues:
-     urgency (no / yes) x amount (low / high) x presentation (personal / official)
-   Each scenario has a GENUINE and a FRAUDULENT version that are identical
-   (display name, amount, note, deadline, look) EXCEPT for the sender-identity
-   cue: wallet address, registered account name and history with that sender.
-   Each participant sees every scenario once: 4 randomly chosen as fraudulent,
-   4 as genuine, in random order.
+   EXPERIMENTAL DESIGN (unchanged from v2)
+   8 scenarios = 2x2x2 crossing of urgency x amount x presentation.
+   Each has a GENUINE and a FRAUDULENT version that differ ONLY in the
+   sender-identity cue (wallet address, registered name, history).
+   Per participant: 4 random fraudulent + 4 genuine, random order.
+   Notification condition: every request arrives the same way (in-app
+   notification only), so notification is held constant.
    ===================================================================== */
+const NOTIFICATION_CONDITION = "In-app notification only";
 const SCENARIOS = [
   { id:"S1", label:"Mariam Hassan – Thursday dinner",
     urgency:"No", amountLevel:"Low", presentation:"Personal",
     displayName:"Mariam Hassan", initials:"MH", amount:180,
     note:"Thursday dinner 🍕 your share", expiry:"Expires in 7 days", received:"2 hours ago",
-    genuine:{ address:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED",
-              history:"6 previous transactions · last on 12 Oct" },
-    fraud:{   address:"mariam.hasan22@pay", registeredName:"MOHAMED ABDELRAHMAN SAEED",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED", history:"6 previous transactions · last on 12 Oct" },
+    fraud:{   address:"mariam.hasan22@pay", registeredName:"MOHAMED ABDELRAHMAN SAEED", history:"No previous transactions" } },
   { id:"S2", label:"Book Corner – delivery fee",
     urgency:"No", amountLevel:"Low", presentation:"Official",
     displayName:"Book Corner", initials:"BC", amount:35,
     note:"DELIVERY FEE – ORDER #20417", expiry:"Expires in 7 days", received:"10 minutes ago",
-    genuine:{ address:"bookcorner@pay", registeredName:"BOOK CORNER BOOKSTORE",
-              history:"2 previous transactions · last on 26 Oct" },
-    fraud:{   address:"bookcorner.delivery@pay", registeredName:"MAHMOUD ADEL RAGAB",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"bookcorner@pay", registeredName:"BOOK CORNER BOOKSTORE", history:"2 previous transactions · last on 26 Oct" },
+    fraud:{   address:"bookcorner.delivery@pay", registeredName:"MAHMOUD ADEL RAGAB", history:"No previous transactions" } },
   { id:"S3", label:"Youssef Tarek – money sent by mistake",
     urgency:"No", amountLevel:"High", presentation:"Personal",
     displayName:"Youssef Tarek", initials:"YT", amount:1500,
     note:"sorry, sent you 1,500 by mistake yesterday 🤦‍♂️ can you send it back?", expiry:"Expires in 7 days", received:"1 hour ago",
-    genuine:{ address:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ",
-              history:"You received EGP 1,500 from this account yesterday" },
-    fraud:{   address:"youssef.tarek.eg@pay", registeredName:"AHMED SAMIR FATHY",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ", history:"You received EGP 1,500 from this account yesterday" },
+    fraud:{   address:"youssef.tarek.eg@pay", registeredName:"AHMED SAMIR FATHY", history:"No previous transactions" } },
   { id:"S4", label:"Nada Housing – apartment deposit",
     urgency:"No", amountLevel:"High", presentation:"Official",
     displayName:"Nada Housing Services", initials:"NH", amount:2000,
     note:"NOVEMBER DEPOSIT – APARTMENT 4B, NASR CITY", expiry:"Expires in 7 days", received:"Yesterday",
-    genuine:{ address:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES",
-              history:"1 previous transaction · last on 1 Oct" },
-    fraud:{   address:"nada.housing.office@pay", registeredName:"SHERIF NABIL ABDELHAMID",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES", history:"1 previous transaction · last on 1 Oct" },
+    fraud:{   address:"nada.housing.office@pay", registeredName:"SHERIF NABIL ABDELHAMID", history:"No previous transactions" } },
   { id:"S5", label:"Omar Khaled – taxi share",
     urgency:"Yes", amountLevel:"Low", presentation:"Personal",
     displayName:"Omar Khaled", initials:"OK", amount:70,
     note:"taxi share 🚕 please send it NOW, I'm at the cashier and short on balance!!", expiry:"Expires in 10 minutes", received:"Just now",
-    genuine:{ address:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA",
-              history:"9 previous transactions · last on 20 Oct" },
-    fraud:{   address:"omar.khaled.01@pay", registeredName:"AHMED KAMAL IBRAHIM",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA", history:"9 previous transactions · last on 20 Oct" },
+    fraud:{   address:"omar.khaled.01@pay", registeredName:"AHMED KAMAL IBRAHIM", history:"No previous transactions" } },
   { id:"S6", label:"City Sports Club – membership",
     urgency:"Yes", amountLevel:"Low", presentation:"Official",
     displayName:"City Sports Club", initials:"CS", amount:150,
     note:"MEMBERSHIP PAYMENT DUE TODAY – ACCESS SUSPENDED AFTER 23:59", expiry:"Expires in 15 minutes", received:"Just now",
-    genuine:{ address:"city.sports@pay", registeredName:"CITY SPORTS CLUB",
-              history:"5 previous transactions · last on 1 Oct" },
-    fraud:{   address:"citysports.club@pay", registeredName:"HAZEM MOHAMED ABDO",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"city.sports@pay", registeredName:"CITY SPORTS CLUB", history:"5 previous transactions · last on 1 Oct" },
+    fraud:{   address:"citysports.club@pay", registeredName:"HAZEM MOHAMED ABDO", history:"No previous transactions" } },
   { id:"S7", label:"Laila Adel – pharmacy for mom",
     urgency:"Yes", amountLevel:"High", presentation:"Personal",
     displayName:"Laila Adel", initials:"LA", amount:1200,
     note:"at the hospital with mom 😢 need 1,200 for the pharmacy RIGHT NOW please", expiry:"Expires in 10 minutes", received:"Just now",
-    genuine:{ address:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED",
-              history:"14 previous transactions · last on 24 Oct" },
-    fraud:{   address:"laila.adel7@pay", registeredName:"KARIM SAMY HELMY",
-              history:"No previous transactions" } },
-
+    genuine:{ address:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED", history:"14 previous transactions · last on 24 Oct" },
+    fraud:{   address:"laila.adel7@pay", registeredName:"KARIM SAMY HELMY", history:"No previous transactions" } },
   { id:"S8", label:"Sea Breeze Travel Club – Alexandria trip",
     urgency:"Yes", amountLevel:"High", presentation:"Official",
     displayName:"Sea Breeze Travel Club", initials:"SB", amount:2450,
     note:"FINAL NOTICE: ALEXANDRIA TRIP BOOKING CANCELLED UNLESS PAID WITHIN 15 MIN", expiry:"Expires in 15 minutes", received:"Just now",
-    genuine:{ address:"seabreeze.travel@pay", registeredName:"SEA BREEZE TRAVEL CLUB",
-              history:"1 previous transaction · last on 27 Oct" },
-    fraud:{   address:"seabreeze.bookings@pay", registeredName:"MAHMOUD FAROUK ZAKI",
-              history:"No previous transactions" } }
+    genuine:{ address:"seabreeze.travel@pay", registeredName:"SEA BREEZE TRAVEL CLUB", history:"1 previous transaction · last on 27 Oct" },
+    fraud:{   address:"seabreeze.bookings@pay", registeredName:"MAHMOUD FAROUK ZAKI", history:"No previous transactions" } }
 ];
-const N_FRAUD = 4; // 4 fraudulent + 4 genuine per participant
+const N_FRAUD = 4;
 
 /* =====================================================================
-   QUESTIONNAIRE (all after the 8 requests, so questions about scams
-   cannot prime behaviour in the task). Order: A -> B -> C -> Age (last).
+   PRE-REQUEST MESSAGE (social-engineering variable, added in v4)
+   Per participant: 4 of the 8 requests are preceded by a phone message
+   (2 genuine + 2 fraudulent, chosen at random), the other 4 arrive with
+   no message. For a given scenario the message is IDENTICAL in the
+   genuine and fraudulent versions, so the message itself never reveals
+   the answer – only its presence/absence is manipulated.
+   ===================================================================== */
+const N_MSG_PER_TRUTH = 2;
+const MESSAGES = {
+  S1:{ channel:"WhatsApp", sender:"Mariam Hassan", type:"Bill-split reminder",
+       text:"Hey! Sent you the request for Thursday's dinner 🍕 180 each, pay whenever you can" },
+  S2:{ channel:"SMS", sender:"BookCorner", type:"Delivery notice",
+       text:"Your order #20417 is out for delivery. A EGP 35 delivery fee request has been sent to your payment app." },
+  S3:{ channel:"WhatsApp", sender:"+20 112 345 6789", type:"Mistaken transfer (unknown number)",
+       text:"Hi, I accidentally transferred money to your account. This is my old number, and I'm your friend Youssef. Could you please send the 1,500 back? I sent you a request." },
+  S4:{ channel:"SMS", sender:"NadaHousing", type:"Payment reminder",
+       text:"Reminder: your November deposit for Apartment 4B is due. A payment request of EGP 2,000 has been sent to you." },
+  S5:{ channel:"WhatsApp", sender:"Omar Khaled", type:"Urgent favour",
+       text:"send the taxi money NOW pls 🙏 I'm at the cashier and my balance is short" },
+  S6:{ channel:"SMS", sender:"CitySports", type:"Suspension warning",
+       text:"Your membership expires TODAY. Pay EGP 150 now to avoid suspension. A payment request has been sent to you." },
+  S7:{ channel:"WhatsApp", sender:"Laila (sister)", type:"Family emergency",
+       text:"Mom is at the hospital 😢 I need 1,200 for the pharmacy right now. Sent you a request, please hurry" },
+  S8:{ channel:"SMS", sender:"SeaBreeze", type:"Cancellation threat",
+       text:"FINAL NOTICE: Your Alexandria trip booking will be CANCELLED unless EGP 2,450 is paid within 15 minutes. Request sent." }
+};
+const MSG_Q = "Did the message you received before this request influence your decision to accept or reject it?";
+const MSG_OPTIONS = ["Yes, it made me more likely to accept.","Yes, it made me more likely to reject.",
+                     "No, it did not influence my decision.","I am not sure."];
+
+/* =====================================================================
+   PART C — per-request follow-up (replaces the old end-of-study Part C)
+   Each reason has its own binary column (key) and a factor code used
+   for the factor-level Reason_* variables in the Analysis Dataset.
+   ===================================================================== */
+const ACCEPT_Q = "Why did you accept this request?";
+const REJECT_Q = "Why did you reject this request?";
+const ACCEPT_REASONS = [
+  { key:"acc_recognized_sender",  text:"I recognized the sender.",                          factor:"Sender_Name" },
+  { key:"acc_amount_reasonable",  text:"The amount seemed reasonable.",                     factor:"Amount" },
+  { key:"acc_notification",       text:"The notification influenced my decision.",          factor:"Notification" },
+  { key:"acc_note_legitimate",    text:"The note made the request seem legitimate.",        factor:"Note" },
+  { key:"acc_trusted_sender",     text:"I trusted the sender.",                             factor:"Relationship" },
+  { key:"acc_seemed_urgent",      text:"The request seemed urgent.",                        factor:"Urgency" },
+  { key:"acc_familiar_type",      text:"I was familiar with this type of request.",         factor:"Familiarity" },
+  { key:"acc_nothing_suspicious", text:"I did not notice anything suspicious.",             factor:"No_Red_Flags" },
+  { key:"acc_presentation",       text:"The way the request was presented looked genuine.", factor:"Presentation" }
+];
+const REJECT_REASONS = [
+  { key:"rej_unrecognized_sender", text:"I did not recognize the sender.",                       factor:"Sender_Name" },
+  { key:"rej_amount_suspicious",   text:"The amount seemed suspicious.",                         factor:"Amount" },
+  { key:"rej_notification",        text:"The notification made me uncomfortable.",               factor:"Notification" },
+  { key:"rej_note_suspicious",     text:"The note seemed suspicious or unclear.",                factor:"Note" },
+  { key:"rej_distrust_sender",     text:"I did not trust the sender.",                           factor:"Relationship" },
+  { key:"rej_seemed_unusual",      text:"The request seemed unusual.",                           factor:"Unusual" },
+  { key:"rej_timing",              text:"The timing made me suspicious.",                        factor:"Timing" },
+  { key:"rej_uncomfortable",       text:"I did not feel comfortable approving the request.",     factor:"Discomfort" },
+  { key:"rej_urgency",             text:"The urgency of the request made me suspicious.",        factor:"Urgency" },
+  { key:"rej_presentation",        text:"The way the request was presented looked suspicious.",  factor:"Presentation" }
+];
+const FACTORS = ["Notification","Sender_Name","Amount","Note","Relationship","Timing","Urgency","Presentation",
+                 "Familiarity","No_Red_Flags","Unusual","Discomfort"];
+
+/* =====================================================================
+   QUESTIONNAIRE
+   Part D (age) – before the requests.  Parts A & B – after the requests
+   (original placement).  No typed answers anywhere.
    ===================================================================== */
 const FREQ5 = ["Never","Rarely","Sometimes","Often","Always"];
-const SECTIONS = [
+const PART_D = { tag:"Part D", title:"Before you begin", questions:[
+  { key:"age_range", type:"single", text:"What is your age range?",
+    options:["Under 18","18–24","25–34","35–44","45–54","55–64","65 or above","Prefer not to say"] }
+]};
+const POST_SECTIONS = [
   { tag:"Part A", title:"Your use of digital payment apps", questions:[
     { key:"A1_usage_frequency", type:"single", text:"How frequently do you use digital payment applications?",
       options:["Daily","Several times a week","About once a week","A few times a month","Less than once a month"] },
@@ -211,154 +275,131 @@ const SECTIONS = [
     { key:"B4_inspect_details", type:"single", text:"Do you normally inspect the information in a payment request before making a decision?", options:FREQ5 },
     { key:"B5_detection_confidence", type:"scale", text:"How confident are you in distinguishing genuine payment requests from fraudulent ones?",
       anchors:["Not at all confident","Very confident"] }
-  ]},
-  { tag:"Part C", title:"About the requests you just saw", questions:[
-    { key:"C1_top_factors", type:"multi", max:3, text:"Which factors influenced your decisions the most?", hint:"Choose up to 3.",
-      options:["Sender's display name","Wallet address","Registered account name","Previous transactions with the sender","Requested amount","Urgency or deadline","Wording of the note","Visual appearance of the request","Gut feeling","Other"] },
-    { key:"C2_difficult_requests", type:"multi", max:8, text:"Which payment requests were the most difficult to evaluate?", hint:"Choose all that apply.",
-      options:"__SCENARIOS__" },
-    { key:"C3_suspicion_signs", type:"text", text:"What signs made you suspicious of a payment request?", hint:"Write “none” if nothing made you suspicious." },
-    { key:"C4_decision_confidence", type:"scale", text:"How confident were you in the decisions you made?",
-      anchors:["Not at all confident","Very confident"] },
-    { key:"C5_main_reason", type:"text", text:"What was the main reason behind accepting or declining the requests?" }
-  ]},
-  { tag:"Last question", title:"About you", questions:[
-    { key:"age_range", type:"single", text:"What is your age range?",
-      options:["Under 18","18–24","25–34","35–44","45–54","55–64","65 or above","Prefer not to say"] }
   ]}
 ];
+// progress units: Part D (1) + 8 requests + Part A (1) + Part B (1)
+const TOTAL_UNITS = 1 + SCENARIOS.length + POST_SECTIONS.length;
 
 /* =====================================================================
-   STATE + STORAGE HELPERS
+   STATE + HELPERS
    ===================================================================== */
-const S = { pid:null, start:null, fraudSet:[], order:[], idx:0, shownAt:0,
-            decisions:[], answers:{}, balance:CONFIG.START_BALANCE, section:0, end:null };
-
+const S = { pid:null, start:null, fraudSet:[], msgSet:[], order:[], idx:0, shownAt:0, decidedAt:0, msgShownAt:0, msgViewMs:"",
+            pending:null, responses:[], answers:{}, balance:CONFIG.START_BALANCE, section:0, end:null };
 function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 function load(k){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } }
-
 function makeId(){
-  const abc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s="";
-  const arr = new Uint32Array(6);
+  const abc="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; const arr=new Uint32Array(6);
   try{ crypto.getRandomValues(arr); }catch(e){ for(let i=0;i<6;i++) arr[i]=Math.floor(Math.random()*1e9); }
-  for(let i=0;i<6;i++) s+=abc[arr[i]%abc.length];
-  return "P-"+s;
+  for(let i=0;i<6;i++) s+=abc[arr[i]%abc.length]; return "P-"+s;
 }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function fmt(n){ return n.toLocaleString("en-US"); }
 function nowIso(){ return new Date().toISOString(); }
 function deviceType(){ const ua=navigator.userAgent||""; return /iPhone|iPad|iPod/i.test(ua)?"iOS":/Android/i.test(ua)?"Android":/Mobi/i.test(ua)?"Other mobile":"Desktop"; }
-const $app = document.getElementById("app");
+const $app=document.getElementById("app");
 function scrollTop(){ window.scrollTo(0,0); }
+function pct(units){ return Math.round(100*units/TOTAL_UNITS); }
 
 /* =====================================================================
-   SENDING DATA TO GOOGLE SHEETS (with retry + on-device backup)
+   SAVING (queue + retry + on-device backup; each request saved at once)
    ===================================================================== */
 async function postOnce(payload){
-  const body = JSON.stringify(payload);
+  const body=JSON.stringify(payload);
   try{
-    const r = await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
-    const j = await r.json();
-    if(j && j.ok) return "ok";
-    throw new Error((j&&j.error)||"bad response");
+    const r=await fetch(CONFIG.SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+    const j=await r.json(); if(j&&j.ok) return "ok"; throw new Error((j&&j.error)||"bad response");
   }catch(e){
-    // Fallback for browsers that block reading the reply: send blind.
     try{ await fetch(CONFIG.SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body}); return "unconfirmed"; }
     catch(e2){ return "fail"; }
   }
 }
-async function send(payload){
-  const queue = load("pending")||[];
-  queue.push(payload); store("pending", queue);
-  return flush();
-}
-async function flush(){
-  if(!CONFIG.SCRIPT_URL) return "no-url";
-  let queue = load("pending")||[]; let last="ok";
-  while(queue.length){
-    let res="fail";
-    for(let attempt=0; attempt<4 && res==="fail"; attempt++){
-      if(attempt) await new Promise(r=>setTimeout(r, 1500*attempt));
-      res = await postOnce(queue[0]);
+let flushing=null;
+function send(payload){ const q=load("pending")||[]; q.push(payload); store("pending",q); return flush(); }
+function flush(){
+  if(!CONFIG.SCRIPT_URL) return Promise.resolve("no-url");
+  if(flushing) return flushing.then(()=>flush());
+  flushing=(async()=>{
+    let q=load("pending")||[], last="ok";
+    while(q.length){
+      let res="fail";
+      for(let a=0;a<4&&res==="fail";a++){ if(a) await new Promise(r=>setTimeout(r,1500*a)); res=await postOnce(q[0]); }
+      if(res==="fail"){ last="fail"; break; }
+      if(res==="unconfirmed") last="unconfirmed";
+      q.shift(); store("pending",q);
     }
-    if(res==="fail"){ last="fail"; break; }
-    if(res==="unconfirmed") last="unconfirmed";
-    queue.shift(); store("pending", queue);
-  }
-  return last;
+    return last;
+  })();
+  const p=flushing; p.finally(()=>{ if(flushing===p) flushing=null; }); return p;
 }
-window.addEventListener("online", ()=>{ flush(); });
+window.addEventListener("online",()=>{ flush(); });
 
 /* =====================================================================
    DATA ROWS
    ===================================================================== */
-function scoring(){
-  const d=S.decisions;
+function counts(){
+  const d=S.responses;
   return {
-    n_correct: d.filter(x=>x.correct===1).length,
-    accuracy_pct: d.length? Math.round(100*d.filter(x=>x.correct===1).length/d.length) : "",
-    false_acceptances: d.filter(x=>x.error_type==="False acceptance").length,
-    false_rejections: d.filter(x=>x.error_type==="False rejection").length,
-    fraud_accept_rate_pct: Math.round(100*d.filter(x=>x.error_type==="False acceptance").length/N_FRAUD),
-    genuine_reject_rate_pct: Math.round(100*d.filter(x=>x.error_type==="False rejection").length/(SCENARIOS.length-N_FRAUD))
+    requests_completed:d.length,
+    accept_count:d.filter(x=>x.decision==="Accept").length,
+    reject_count:d.filter(x=>x.decision==="Reject").length,
+    n_correct:d.filter(x=>x.correct===1).length,
+    accuracy_pct:d.length?Math.round(100*d.filter(x=>x.correct===1).length/d.length):"",
+    false_acceptances:d.filter(x=>x.error_type==="False acceptance").length,
+    false_rejections:d.filter(x=>x.error_type==="False rejection").length,
+    accepts_with_message:d.filter(x=>x.message_shown==="Yes"&&x.decision==="Accept").length,
+    accepts_without_message:d.filter(x=>x.message_shown==="No"&&x.decision==="Accept").length,
+    false_acceptances_with_message:d.filter(x=>x.message_shown==="Yes"&&x.error_type==="False acceptance").length,
+    false_acceptances_without_message:d.filter(x=>x.message_shown==="No"&&x.error_type==="False acceptance").length
   };
 }
-function participantRow(completed){
-  const a=S.answers, row={
-    participant_id:S.pid, study_version:CONFIG.STUDY_VERSION, start_time:S.start,
-    end_time: completed? S.end : "", duration_sec: completed? Math.round((new Date(S.end)-new Date(S.start))/1000) : "",
-    consent:"Yes", completed: completed?"Yes":"No (task done, questionnaire not finished)", device:deviceType(),
-    fraudulent_scenarios:S.fraudSet.join(";"), presentation_order:S.order.join(";"),
-    ...scoring()
-  };
-  SECTIONS.forEach(sec=>sec.questions.forEach(q=>{
-    let v=a[q.key]; if(Array.isArray(v)) v=v.join("; "); row[q.key]= (v===undefined? "" : v);
-  }));
+function participantRow(status){
+  const row={ participant_id:S.pid, study_version:CONFIG.STUDY_VERSION, start_time:S.start,
+    end_time:S.end||"", duration_sec:S.end?Math.round((new Date(S.end)-new Date(S.start))/1000):"",
+    consent:"Yes", completion_status:status, device:deviceType(),
+    fraudulent_scenarios:S.fraudSet.join(";"), message_scenarios:S.msgSet.join(";"), presentation_order:S.order.join(";"), ...counts() };
+  [PART_D,...POST_SECTIONS].forEach(sec=>sec.questions.forEach(q=>{ const v=S.answers[q.key]; row[q.key]=v===undefined?"":v; }));
   return row;
 }
 
 /* =====================================================================
    SCREENS
    ===================================================================== */
-function topbar(right){
-  return `<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div><div class="progress">${right||""}</div></div>
-  <div class="balance"><small>Available balance</small><div>EGP ${fmt(S.balance)}</div></div></div>`;
+function topbar(label, units){
+  return `<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div>${label?`<div class="pill">${label}</div>`:""}</div>
+  <div class="balance"><small>Available balance</small><div>EGP ${fmt(S.balance)}</div></div>
+  ${units!==undefined?`<div class="bar"><span style="width:${pct(units)}%"></span></div>`:""}</div>`;
 }
-
 function screenAlreadyDone(){
-  $app.innerHTML = `<div class="content"><div class="card"><h1>Thank you</h1>
-  <p>This device has already completed the study. Each person can take part once.</p></div></div>`;
+  $app.innerHTML=`<div class="content"><div class="card"><h1>Thank you</h1><p>This device has already completed the study. Each person can take part once.</p></div></div>`;
 }
-
 function screenConsent(){
-  $app.innerHTML = `<div class="content" style="padding-top:28px">
-  <div class="card">
+  $app.innerHTML=`<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div></div></div>
+  <div class="content lift"><div class="card">
     <h1>Payment Decisions Study</h1>
     <p>This academic study looks at how people decide on money requests in digital payment apps. It takes about 8–10 minutes.</p>
-    <p><b>What you will do:</b> you will use a simulated payment app, receive 8 money requests and choose <b>Accept</b> or <b>Decline</b> for each one. Then you will answer a short questionnaire.</p>
-    <p><b>No real money</b> is involved and you will <b>never</b> be asked for a PIN, password or any banking details.</p>
-    <p><b>Your privacy:</b> participation is anonymous. You get a random code; we do not collect your name, phone number or any contact details. Answers are stored for research analysis only.</p>
+    <p><b>What you will do:</b> answer one short question, then receive 8 money requests in a simulated payment app. For each one, choose <b>Accept</b> or <b>Reject</b> and tick the reasons for your choice. A few short questions follow at the end.</p>
+    <p><b>No real money</b> is involved and you will <b>never</b> be asked for a PIN, password or any banking details. You will not need to type anything.</p>
+    <p><b>Your privacy:</b> participation is anonymous. You get a random code; we do not collect your name, phone number or contact details. Answers are used for research analysis only.</p>
     <p>Taking part is voluntary and you may stop at any time by closing the page.</p>
     <label class="check"><input type="checkbox" id="c1"> <span>I am 18 or older and I use a digital payment application.</span></label>
     <label class="check"><input type="checkbox" id="c2"> <span>I have read the information above and agree to take part.</span></label>
     <button class="btn btn-primary" id="go" disabled>Start</button>
   </div></div>`;
-  const c1=document.getElementById("c1"), c2=document.getElementById("c2"), go=document.getElementById("go");
-  const upd=()=>{ go.disabled=!(c1.checked&&c2.checked); };
-  c1.onchange=upd; c2.onchange=upd;
+  const c1=document.getElementById("c1"),c2=document.getElementById("c2"),go=document.getElementById("go");
+  const upd=()=>{ go.disabled=!(c1.checked&&c2.checked); }; c1.onchange=upd; c2.onchange=upd;
   go.onclick=()=>{
     S.pid=makeId(); S.start=nowIso();
-    S.fraudSet = shuffle(SCENARIOS.map(s=>s.id)).slice(0,N_FRAUD).sort();
-    S.order = shuffle(SCENARIOS.map(s=>s.id));
-    screenBriefing();
+    S.fraudSet=shuffle(SCENARIOS.map(s=>s.id)).slice(0,N_FRAUD).sort();
+    S.order=shuffle(SCENARIOS.map(s=>s.id));
+    const gen=SCENARIOS.map(s=>s.id).filter(id=>!S.fraudSet.includes(id));
+    S.msgSet=shuffle(S.fraudSet).slice(0,N_MSG_PER_TRUTH).concat(shuffle(gen).slice(0,N_MSG_PER_TRUTH)).sort();
+    screenQuestions(PART_D, 0, ()=>{ send({participant:participantRow("Started")}); screenBriefing(); });
   };
   scrollTop();
 }
-
 function screenBriefing(){
-  $app.innerHTML = topbar("") + `<div class="content">
-  <div class="card">
+  $app.innerHTML=topbar("Ready",1)+`<div class="content lift"><div class="card">
     <h1>Your role</h1>
     <p>In this study you are <b>Nour Adel</b>, a user of this payment app. This is what happened in Nour's life recently:</p>
     <ul class="story">
@@ -369,30 +410,39 @@ function screenBriefing(){
       <li>Is a member of a sports club and shares taxis with friends.</li>
       <li>Has a sister, Laila, and friends who sometimes send or request money.</li>
     </ul>
-    <p>You will now receive <b>8 money requests</b>. Everything you need is shown on each request screen.</p>
-    <p><b>Decide on each request as you normally would</b> in your own payment app: press <b>Accept</b> to pay or <b>Decline</b> to refuse.</p>
-  </div>
-  <button class="btn btn-primary" id="go">Open my requests</button></div>`;
-  document.getElementById("go").onclick=()=>{ S.idx=0; screenRequest(); };
+    <p>You will now receive <b>8 money requests</b>. Some may arrive after a message on your phone, just like in real life. Everything you need is shown on each screen.</p>
+    <p><b>Decide on each request as you normally would</b> in your own payment app.</p>
+  </div><button class="btn btn-primary" id="go">Open my requests</button></div>`;
+  document.getElementById("go").onclick=()=>{ S.idx=0; nextRequest(); };
   scrollTop();
 }
-
-function currentScenario(){
-  const sc = SCENARIOS.find(s=>s.id===S.order[S.idx]);
-  const isFraud = S.fraudSet.includes(sc.id);
-  return { sc, isFraud, v: isFraud? sc.fraud : sc.genuine };
+function nextRequest(){
+  const id=S.order[S.idx];
+  if(S.msgSet.includes(id)) screenMessage(); else { S.msgViewMs=""; screenRequest(); }
 }
-
+function screenMessage(){
+  const id=S.order[S.idx], m=MESSAGES[id], wa=m.channel==="WhatsApp";
+  $app.innerHTML=`<div class="phone"><div class="ph-time">${new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div>
+    <div class="ph-label">Request ${S.idx+1} of ${SCENARIOS.length}</div>
+    <div class="msgcard"><div class="msg-top"><span class="chan ${wa?"wa":"sms"}">${wa?"💬":"✉️"}</span>
+      <b>${esc(m.channel)}</b><span class="small muted" style="margin-left:auto">now</span></div>
+      <div class="msg-from">${esc(m.sender)}</div><div class="bubble">${esc(m.text)}</div></div>
+    <button class="btn btn-primary" id="go">Open payment app</button></div>`;
+  S.msgShownAt=performance.now();
+  document.getElementById("go").onclick=()=>{ S.msgViewMs=Math.round(performance.now()-S.msgShownAt); screenRequest(); };
+  scrollTop();
+}
+function currentScenario(){
+  const sc=SCENARIOS.find(s=>s.id===S.order[S.idx]); const isFraud=S.fraudSet.includes(sc.id);
+  return { sc, isFraud, v:isFraud?sc.fraud:sc.genuine };
+}
 function screenRequest(){
-  const { sc, v } = currentScenario();
-  const official = sc.presentation==="Official";
-  $app.innerHTML = topbar(`Request ${S.idx+1} of ${SCENARIOS.length}`) + `<div class="content">
-  <div class="card" style="margin-top:-12px">
-    <div class="small muted" style="margin-bottom:12px">Money request · received ${esc(sc.received)}</div>
-    <div class="req-head">
-      <div class="avatar ${official?"official":"personal"}">${esc(sc.initials)}</div>
-      <div><div class="req-name">${esc(sc.displayName)}</div><div class="req-addr">${esc(v.address)}</div></div>
-    </div>
+  const { sc, v }=currentScenario(); const official=sc.presentation==="Official";
+  $app.innerHTML=topbar(`Request ${S.idx+1} of ${SCENARIOS.length}`, 1+S.idx)+`<div class="content lift">
+  <div class="card">
+    <div class="notif"><span class="dot"></span><span>You have received a money request from <b>${esc(sc.displayName)}</b> · ${esc(sc.received)}</span></div>
+    <div class="req-head"><div class="avatar ${official?"official":"personal"}">${esc(sc.initials)}</div>
+      <div><div class="req-name">${esc(sc.displayName)}</div><div class="req-addr">${esc(v.address)}</div></div></div>
     <div class="amount"><small>is requesting</small><strong><span>EGP</span>${fmt(sc.amount)}</strong></div>
     <div class="kv"><div class="k">Registered account name</div><div class="v">${esc(v.registeredName)}</div></div>
     <div class="kv"><div class="k">Note</div><div class="v ${official?"note-official":""}">${esc(sc.note)}</div></div>
@@ -401,164 +451,154 @@ function screenRequest(){
     <div class="kv"><div class="k">Pay from</div><div class="v">nour.adel@pay</div></div>
     <div class="kv"><div class="k">Fees</div><div class="v">EGP 0</div></div>
   </div>
-  <div class="btn-row">
-    <button class="btn btn-outline" id="dec">Decline</button>
-    <button class="btn btn-primary" id="acc">Accept</button>
-  </div></div>`;
-  S.shownAt = performance.now();
+  <div class="btn-row"><button class="btn btn-reject" id="rej">REJECT</button><button class="btn btn-accept" id="acc">ACCEPT</button></div></div>`;
+  S.shownAt=performance.now();
   document.getElementById("acc").onclick=()=>decide("Accept");
-  document.getElementById("dec").onclick=()=>decide("Decline");
+  document.getElementById("rej").onclick=()=>decide("Reject");
   scrollTop();
 }
-
 function decide(decision){
-  const rt = Math.round(performance.now()-S.shownAt);
-  const { sc, isFraud, v } = currentScenario();
-  const truth = isFraud? "Fraudulent" : "Genuine";
-  const correct = (truth==="Genuine" && decision==="Accept") || (truth==="Fraudulent" && decision==="Decline");
-  const error_type = correct? "None" : (truth==="Fraudulent"? "False acceptance" : "False rejection");
-  S.decisions.push({
-    timestamp: nowIso(), participant_id:S.pid, position:S.idx+1, scenario_id:sc.id, scenario_label:sc.label,
-    ground_truth:truth, decision, correct: correct?1:0, error_type, response_time_ms:rt,
-    display_name:sc.displayName, wallet_address:v.address, registered_name:v.registeredName,
-    history_with_sender:v.history, sender_identity_consistent: isFraud?"No":"Yes",
-    amount_egp:sc.amount, amount_level:sc.amountLevel, urgency:sc.urgency, presentation:sc.presentation,
-    note:sc.note, expiry:sc.expiry
-  });
-  if(decision==="Accept") S.balance -= sc.amount;
-  document.querySelectorAll(".btn").forEach(b=>b.disabled=true);
-  const t=document.createElement("div"); t.className="toast";
-  t.textContent = decision==="Accept"? `EGP ${fmt(sc.amount)} sent` : "Request declined";
-  document.body.appendChild(t);
-  setTimeout(()=>{
-    t.remove(); S.idx++;
-    if(S.idx < SCENARIOS.length) screenRequest();
-    else afterTask();
-  }, 900);
+  const rt=Math.round(performance.now()-S.shownAt); S.decidedAt=performance.now();
+  const { sc, isFraud, v }=currentScenario();
+  const truth=isFraud?"Fraudulent":"Genuine";
+  const correct=(truth==="Genuine"&&decision==="Accept")||(truth==="Fraudulent"&&decision==="Reject");
+  S.pending={ sc, v, isFraud, truth, decision, correct, rt, decision_time:nowIso(),
+    msgShown:S.msgSet.includes(sc.id), msgViewMs:S.msgViewMs,
+    error_type: correct?"None":(truth==="Fraudulent"?"False acceptance":"False rejection") };
+  if(decision==="Accept") S.balance-=sc.amount;
+  screenReason();
 }
-
-function afterTask(){
-  // Save the 8 decisions straight away (in case the questionnaire is not finished).
-  send({ participant: participantRow(false), decisions: S.decisions });
-  S.section=0; screenSection();
-}
-
-function scenarioOptions(){
-  return S.order.map((id,i)=>{ const sc=SCENARIOS.find(s=>s.id===id);
-    return { value:id, label:`Request ${i+1}: ${sc.displayName} – EGP ${fmt(sc.amount)}` }; })
-    .concat([{value:"None", label:"None were difficult"}]);
-}
-
-function renderQuestion(q){
-  let h=`<div class="q" data-key="${q.key}"><div class="q-title">${esc(q.text)}</div>`;
-  if(q.hint) h+=`<div class="q-hint">${esc(q.hint)}</div>`;
-  if(q.type==="single"){
-    q.options.forEach(o=>{ h+=`<label class="opt"><input type="radio" name="${q.key}" value="${esc(o)}"><span>${esc(o)}</span></label>`; });
-  } else if(q.type==="multi"){
-    const opts = q.options==="__SCENARIOS__"? scenarioOptions() : q.options.map(o=>({value:o,label:o}));
-    opts.forEach(o=>{ h+=`<label class="opt"><input type="checkbox" name="${q.key}" value="${esc(o.value)}"><span>${esc(o.label)}</span></label>`; });
-  } else if(q.type==="scale"){
-    h+=`<div class="scale">`+[1,2,3,4,5].map(n=>`<label><input type="radio" name="${q.key}" value="${n}">${n}</label>`).join("")+`</div>
-        <div class="anchors"><span>1 = ${esc(q.anchors[0])}</span><span>5 = ${esc(q.anchors[1])}</span></div>`;
-  } else if(q.type==="text"){
-    h+=`<textarea name="${q.key}" maxlength="600" placeholder="Type your answer"></textarea>`;
-  }
-  h+=`<div class="err">Please answer this question.</div></div>`;
-  return h;
-}
-
-function screenSection(){
-  const sec = SECTIONS[S.section];
-  const isLast = S.section===SECTIONS.length-1;
-  $app.innerHTML = `<div class="content" style="padding-top:22px"><div class="card">
-    <span class="section-tag">${esc(sec.tag)}</span><h1>${esc(sec.title)}</h1>
-    ${S.section===0?'<p class="muted small">Thank you – the payment requests are finished. A few short questions follow.</p>':""}
-    <form id="f">${sec.questions.map(renderQuestion).join("")}</form>
-    <button class="btn btn-primary" id="next">${isLast?"Submit":"Continue"}</button>
-    <div class="status" id="st"></div>
+function screenReason(){
+  const P=S.pending, acc=P.decision==="Accept", list=acc?ACCEPT_REASONS:REJECT_REASONS, official=P.sc.presentation==="Official";
+  $app.innerHTML=topbar(`Request ${S.idx+1} of ${SCENARIOS.length}`, 1+S.idx+0.5)+`<div class="content lift"><div class="card">
+    <div class="mini"><div class="avatar ${official?"official":"personal"}">${esc(P.sc.initials)}</div>
+      <div><b>${esc(P.sc.displayName)}</b><div class="small muted">EGP ${fmt(P.sc.amount)}</div></div>
+      <span class="badge ${acc?"acc":"rej"}">${acc?"ACCEPTED":"REJECTED"}</span></div>
+    <div class="q" data-key="reasons"><div class="q-title">${acc?ACCEPT_Q:REJECT_Q}</div>
+      <div class="q-hint">Select all that apply.</div>
+      ${list.map(o=>`<label class="opt"><input type="checkbox" value="${o.key}"><span>${esc(o.text)}</span></label>`).join("")}
+      <div class="err">Please select at least one reason.</div></div>
+    ${P.msgShown?`<div class="q" data-key="msg"><div class="q-title">${esc(MSG_Q)}</div>
+      ${MSG_OPTIONS.map(o=>`<label class="opt"><input type="radio" name="msg_influence" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`:""}
+    <button class="btn btn-primary" id="next" disabled>Continue</button>
   </div></div>`;
-
-  const form=document.getElementById("f");
-  // selection styling + multi max
-  form.addEventListener("change", e=>{
-    const inp=e.target, q=sec.questions.find(x=>x.key===inp.name);
-    if(q && q.type==="multi"){
-      const boxes=[...form.querySelectorAll(`input[name="${q.key}"]`)];
-      if(inp.value==="None" && inp.checked) boxes.forEach(b=>{ if(b!==inp) b.checked=false; });
-      else if(inp.checked) boxes.forEach(b=>{ if(b.value==="None") b.checked=false; });
-      if(boxes.filter(b=>b.checked).length>q.max){ inp.checked=false; }
-    }
-    form.querySelectorAll("label.opt, .scale label").forEach(l=>{ const i=l.querySelector("input"); l.classList.toggle("sel", i.checked); });
-    const qd=inp.closest(".q"); if(qd) qd.classList.remove("invalid");
-  });
-  form.addEventListener("input", e=>{ const qd=e.target.closest(".q"); if(qd) qd.classList.remove("invalid"); });
-
-  document.getElementById("next").onclick=async ()=>{
-    let firstBad=null;
-    sec.questions.forEach(q=>{
-      let val;
-      if(q.type==="multi") val=[...form.querySelectorAll(`input[name="${q.key}"]:checked`)].map(i=>i.value);
-      else if(q.type==="text") val=(form.querySelector(`textarea[name="${q.key}"]`).value||"").trim();
-      else { const c=form.querySelector(`input[name="${q.key}"]:checked`); val=c?c.value:""; if(q.type==="scale"&&val) val=Number(val); }
-      const empty = Array.isArray(val)? val.length===0 : val==="";
-      const qd=form.querySelector(`.q[data-key="${q.key}"]`);
-      if(empty){ qd.classList.add("invalid"); if(!firstBad) firstBad=qd; } else S.answers[q.key]=val;
-    });
-    if(firstBad){ firstBad.scrollIntoView({behavior:"smooth",block:"center"}); return; }
-    if(!isLast){ S.section++; screenSection(); scrollTop(); return; }
-
-    // Final submit
-    const btn=document.getElementById("next"), st=document.getElementById("st");
-    btn.disabled=true; btn.textContent="Saving…"; st.textContent="";
-    S.end=nowIso();
-    const res = await send({ participant: participantRow(true), decisions: S.decisions });
-    if(CONFIG.ONE_SESSION_PER_DEVICE) store("completed", S.pid);
-    screenDebrief(res);
+  const boxes=[...document.querySelectorAll('.q[data-key="reasons"] .opt input')], radios=[...document.querySelectorAll('input[name="msg_influence"]')], next=document.getElementById("next");
+  const upd=()=>{
+    document.querySelectorAll(".opt").forEach(l=>l.classList.toggle("sel",l.querySelector("input").checked));
+    next.disabled=!boxes.some(x=>x.checked) || (P.msgShown && !radios.some(r=>r.checked));
+  };
+  boxes.concat(radios).forEach(b=>b.onchange=upd);
+  next.onclick=()=>{
+    const chosen=boxes.filter(b=>b.checked).map(b=>b.value); if(!chosen.length) return;
+    const r=radios.find(x=>x.checked); if(P.msgShown && !r) return;
+    next.disabled=true; saveResponse(chosen, r?r.value:"");
+    S.idx++; if(S.idx<SCENARIOS.length) nextRequest(); else { S.section=0; screenPost(); }
   };
   scrollTop();
 }
-
+function saveResponse(chosen, msgAnswer){
+  const P=S.pending, acc=P.decision==="Accept", list=acc?ACCEPT_REASONS:REJECT_REASONS, other=acc?REJECT_REASONS:ACCEPT_REASONS;
+  const row={
+    timestamp:nowIso(), participant_id:S.pid, request_id:P.sc.id, response_id:`${S.pid}_${P.sc.id}`, position:S.idx+1,
+    scenario_label:P.sc.label, ground_truth:P.truth, decision:P.decision, correct:P.correct?1:0, error_type:P.error_type,
+    decision_time:P.decision_time, response_time_ms:P.rt, reason_time_ms:Math.round(performance.now()-S.decidedAt),
+    followup_question:acc?ACCEPT_Q:REJECT_Q,
+    selected_reasons:list.filter(o=>chosen.includes(o.key)).map(o=>o.text).join(" | "), n_reasons:chosen.length,
+    display_name:P.sc.displayName, wallet_address:P.v.address, registered_name:P.v.registeredName,
+    history_with_sender:P.v.history, sender_identity_consistent:P.isFraud?"No":"Yes",
+    amount_egp:P.sc.amount, amount_level:P.sc.amountLevel, urgency:P.sc.urgency, presentation:P.sc.presentation,
+    notification_condition:NOTIFICATION_CONDITION, note:P.sc.note, expiry:P.sc.expiry, age_range:S.answers.age_range||"",
+    message_shown:P.msgShown?"Yes":"No",
+    message_type:P.msgShown?MESSAGES[P.sc.id].type:"", message_channel:P.msgShown?MESSAGES[P.sc.id].channel:"",
+    message_sender:P.msgShown?MESSAGES[P.sc.id].sender:"", message_text:P.msgShown?MESSAGES[P.sc.id].text:"",
+    message_view_ms:P.msgShown?P.msgViewMs:"",
+    message_influence:P.msgShown?msgAnswer:"Not asked (no message)"
+  };
+  list.forEach(o=>row[o.key]=chosen.includes(o.key)?1:0);
+  other.forEach(o=>row[o.key]="");               // not shown for this decision
+  FACTORS.forEach(f=>row["Reason_"+f]=list.some(o=>o.factor===f&&chosen.includes(o.key))?1:0);
+  S.responses.push(row);
+  send({ participant:participantRow("In progress"), responses:[row] });
+}
+function renderQuestion(q){
+  let h=`<div class="q" data-key="${q.key}"><div class="q-title">${esc(q.text)}</div>`;
+  if(q.type==="single") q.options.forEach(o=>{ h+=`<label class="opt"><input type="radio" name="${q.key}" value="${esc(o)}"><span>${esc(o)}</span></label>`; });
+  else if(q.type==="scale") h+=`<div class="scale">`+[1,2,3,4,5].map(n=>`<label><input type="radio" name="${q.key}" value="${n}">${n}</label>`).join("")+`</div>
+      <div class="anchors"><span>1 = ${esc(q.anchors[0])}</span><span>5 = ${esc(q.anchors[1])}</span></div>`;
+  return h+`<div class="err">Please answer this question.</div></div>`;
+}
+function screenQuestions(sec, units, onDone, btnLabel){
+  $app.innerHTML=`<div class="content" style="padding-top:22px"><div class="plainbar"><span style="width:${pct(units)}%"></span></div><div class="card">
+    <span class="section-tag">${esc(sec.tag)}</span><h1>${esc(sec.title)}</h1>
+    ${sec.intro?`<p class="muted small">${sec.intro}</p>`:""}
+    <form id="f">${sec.questions.map(renderQuestion).join("")}</form>
+    <button class="btn btn-primary" id="next">${btnLabel||"Continue"}</button><div class="status" id="st"></div></div></div>`;
+  const form=document.getElementById("f");
+  form.addEventListener("change",e=>{
+    form.querySelectorAll("label.opt, .scale label").forEach(l=>{ const i=l.querySelector("input"); l.classList.toggle("sel",i.checked); });
+    const qd=e.target.closest(".q"); if(qd) qd.classList.remove("invalid");
+  });
+  document.getElementById("next").onclick=()=>{
+    let bad=null;
+    sec.questions.forEach(q=>{
+      const c=form.querySelector(`input[name="${q.key}"]:checked`); let val=c?c.value:"";
+      if(q.type==="scale"&&val) val=Number(val);
+      const qd=form.querySelector(`.q[data-key="${q.key}"]`);
+      if(val===""){ qd.classList.add("invalid"); if(!bad) bad=qd; } else S.answers[q.key]=val;
+    });
+    if(bad){ bad.scrollIntoView({behavior:"smooth",block:"center"}); return; }
+    onDone();
+  };
+  scrollTop();
+}
+function screenPost(){
+  const sec={...POST_SECTIONS[S.section]};
+  if(S.section===0) sec.intro="Thank you – the payment requests are finished. Two short pages follow.";
+  const isLast=S.section===POST_SECTIONS.length-1;
+  screenQuestions(sec, 1+SCENARIOS.length+S.section, async ()=>{
+    if(!isLast){ S.section++; screenPost(); return; }
+    const btn=document.getElementById("next"); btn.disabled=true; btn.textContent="Saving…";
+    S.end=nowIso();
+    const res=await send({ participant:participantRow("Completed") });
+    if(CONFIG.ONE_SESSION_PER_DEVICE) store("completed",S.pid);
+    screenDebrief(res);
+  }, isLast?"Finish":"Continue");
+}
 function screenDebrief(saveResult){
-  const items = S.decisions.map(d=>{
-    const sc=SCENARIOS.find(s=>s.id===d.scenario_id);
-    const gen=d.ground_truth==="Genuine";
-    const why = gen
+  const items=S.responses.map(d=>{
+    const sc=SCENARIOS.find(s=>s.id===d.request_id), gen=d.ground_truth==="Genuine";
+    const why=gen
       ? `Genuine: the address <b>${esc(sc.genuine.address)}</b> and registered name matched ${esc(sc.displayName)}, and you had paid this account before.`
       : `Fraudulent: the address <b>${esc(sc.fraud.address)}</b> imitated the real one (${esc(sc.genuine.address)}), the registered name was <b>${esc(sc.fraud.registeredName)}</b> instead of ${esc(sc.displayName)}, and there were no previous transactions.`;
     return `<div class="debrief-item"><b>Request ${d.position}: ${esc(sc.displayName)} – EGP ${fmt(sc.amount)}</b>
       <span class="tag ${gen?"gen":"fr"}">${gen?"Genuine":"Fraudulent"}</span><br>
       <span class="muted">You chose ${d.decision} ${d.correct?"✓":"✗"}</span><br>${why}</div>`;
   }).join("");
-  const sc = scoring();
-  const saveMsg = saveResult==="ok"||saveResult==="unconfirmed" ? "Your answers have been saved."
-    : saveResult==="no-url" ? "Researcher note: no Google Sheets link is configured, so data was kept on this device only."
-    : "Your answers are stored on this device and will be sent automatically when the connection returns. Please keep this page open for a moment.";
-  $app.innerHTML = `<div class="content" style="padding-top:22px">
-  <div class="card"><h1>Thank you!</h1>
-    <p>${saveMsg}</p>
+  const c=counts();
+  const msg=saveResult==="ok"||saveResult==="unconfirmed"?"Your answers have been saved."
+    :saveResult==="no-url"?"Researcher note: no Google Sheets link is configured, so data was kept on this device only."
+    :"Your answers are stored on this device and will be sent automatically when the connection returns. Please keep this page open for a moment.";
+  $app.innerHTML=`<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div><div class="pill">Completed</div></div>
+    <div class="bar"><span style="width:100%"></span></div></div>
+  <div class="content lift"><div class="card"><h1>Thank you!</h1><p>${msg}</p>
     <p class="small muted">Your anonymous participant code</p><p class="pid">${esc(S.pid)}</p>
     <p class="small muted">Keep this code if you later want your data removed.</p></div>
   <div class="card"><h2>What this study was about</h2>
     <p>Some of the requests you saw were <b>fraudulent</b>. The study looks at which cues (sender, amount, urgency, wording, look) lead people to pay fake requests or to refuse real ones.</p>
     <p>In this study the reliable cue was always the <b>sender's identity</b>: the exact wallet address, the registered account name and your history with that account. Urgency, amount and an official look appeared in genuine and fraudulent requests alike.</p>
-    <p>You answered <b>${sc.n_correct} of ${SCENARIOS.length}</b> correctly.</p>
-    ${items}</div>
-  <div class="card"><h2>How to protect yourself</h2>
-    <ul class="story">
-      <li>Check the registered account name and the exact address, character by character, before paying.</li>
-      <li>Be careful with requests from accounts you have never paid before, even if the display name looks familiar.</li>
-      <li>Treat pressure (“pay now”, short deadlines, emergencies) as a reason to slow down and confirm by calling the person.</li>
-      <li>A genuine company will never ask you to pay to “verify” or “unlock” your account.</li>
-    </ul></div></div>`;
+    <p>You answered <b>${c.n_correct} of ${SCENARIOS.length}</b> correctly.</p>${items}</div>
+  <div class="card"><h2>How to protect yourself</h2><ul class="story">
+    <li>Check the registered account name and the exact address, character by character, before paying.</li>
+    <li>Be careful with requests from accounts you have never paid before, even if the display name looks familiar.</li>
+    <li>Treat pressure (“pay now”, short deadlines, emergencies) as a reason to slow down and confirm by calling the person.</li>
+    <li>A genuine company will never ask you to pay to “verify” or “unlock” your account.</li></ul></div></div>`;
   scrollTop();
 }
 
-/* =====================================================================
-   START
-   ===================================================================== */
+/* START */
 (function init(){
   flush();
-  if(CONFIG.ONE_SESSION_PER_DEVICE && load("completed") && !/[?&]reset=1/.test(location.search)) { screenAlreadyDone(); return; }
+  if(CONFIG.ONE_SESSION_PER_DEVICE&&load("completed")&&!/[?&]reset=1/.test(location.search)){ screenAlreadyDone(); return; }
   screenConsent();
 })();
 </script>
