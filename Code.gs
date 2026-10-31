@@ -1,5 +1,5 @@
 /**
- * Payment Decisions Study – Google Sheets receiver (v5)
+ * Payment Decisions Study – Google Sheets receiver (v6)
  * Paste into Extensions > Apps Script of the results spreadsheet, then
  * Deploy > Manage deployments > Edit > Version: New version > Deploy
  * (keeps the same /exec link).
@@ -13,7 +13,7 @@
  * or renamed "<tab> (old)" when it already holds data, so nothing is ever mixed.
  */
 
-const VERSION = 'v5';
+const VERSION = 'v6';
 const SUMMARY_SHEET  = 'Participant Summary';
 const RESPONSE_SHEET = 'Request Responses';
 const ANALYSIS_SHEET = 'Analysis Dataset';
@@ -23,7 +23,7 @@ const SUMMARY_HEADERS = [
   'participant_id','study_version','start_time','end_time','duration_sec','consent','completion_status','device',
   'requests_completed','accept_count','reject_count','n_correct','accuracy_pct','false_acceptances','false_rejections',
   'accepts_with_message','accepts_without_message','false_acceptances_with_message','false_acceptances_without_message',
-  'A1_instapay_frequency','A3_transaction_confidence','A4_online_scam_experience','A5_scam_experience',
+  'A1_instapay_frequency','A3_transaction_confidence','A4_online_scam_experience',
   'B1_verify_sender','B2_amount_importance','age_range',
   'fraudulent_scenarios','message_scenarios','presentation_order','last_saved'
 ];
