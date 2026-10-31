@@ -4,69 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#3b1a6b">
+<meta name="theme-color" content="#7a00e6">
 <title>Payment Decisions Study</title>
 <style>
 :root{
-  --purple:#5b21b6; --purple-deep:#3b1a6b; --magenta:#c026d3; --navy:#141b3c;
-  --grad:linear-gradient(135deg,#3b1a6b 0%,#6d28d9 55%,#c026d3 100%);
-  --grad-btn:linear-gradient(135deg,#6d28d9,#c026d3);
-  --soft:#f4effc; --soft-2:#fbf7ff; --ink:#141b3c; --muted:#5f6684; --line:#e7e2f1;
-  --bg:#f6f4fa; --card:#ffffff; --ok:#15803d; --bad:#be123c;
+  --purple:#7a00e6; --purple-2:#5a00c7; --purple-deep:#3d0a8a; --orange:#f26b3a; --coral:#f48a6e;
+  --navy:#141b3c; --ink:#141b3c; --muted:#8a8fa3; --line:#ece9f3; --bg:#f5f3fb; --card:#ffffff;
+  --lav:#ead9fb; --soft:#f3ecfd; --ok:#15803d; --bad:#be123c;
+  --grad:linear-gradient(160deg,#8f00ff 0%,#6a00d9 55%,#4b00b0 100%);
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
-#app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
-@media (min-width:600px){ #app{margin:24px auto;min-height:calc(100vh - 48px);border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(59,26,107,.18)} }
-.topbar{background:var(--grad);color:#fff;padding:16px 18px 34px}
-.topbar .row{display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.3px;font-size:17px}
-.logo .mark{width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:14px}
-.pill{font-size:12px;font-weight:600;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:999px}
-.balance{margin-top:16px}
-.balance small{opacity:.85;font-size:12px}
-.balance div{font-size:26px;font-weight:800;margin-top:2px;letter-spacing:-.3px}
-.bar{height:5px;background:rgba(255,255,255,.25);border-radius:999px;margin-top:14px;overflow:hidden}
-.bar span{display:block;height:100%;background:#fff;border-radius:999px;transition:width .3s}
-.plainbar{height:5px;background:var(--line);border-radius:999px;margin:0 0 16px;overflow:hidden}
-.plainbar span{display:block;height:100%;background:var(--grad-btn);border-radius:999px}
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
+#app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative}
+@media (min-width:600px){ #app{margin:24px auto;min-height:calc(100vh - 48px);border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(61,10,138,.2)} }
 .content{padding:16px;flex:1}
-.lift{margin-top:-22px}
-.card{background:var(--card);border-radius:20px;padding:18px;box-shadow:0 1px 2px rgba(20,27,60,.05),0 8px 24px rgba(59,26,107,.07);margin-bottom:14px}
-h1{font-size:21px;margin:0 0 10px;color:var(--navy)}
-h2{font-size:17px;margin:0 0 10px;color:var(--navy)}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 1px 2px rgba(20,27,60,.05),0 8px 24px rgba(61,10,138,.07);margin-bottom:14px}
+h1{font-size:21px;margin:0 0 10px;color:var(--navy)} h2{font-size:17px;margin:0 0 10px;color:var(--navy)}
 p{line-height:1.5;margin:0 0 10px}
 .muted{color:var(--muted)} .small{font-size:13px}
-.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;letter-spacing:.3px}
-.btn-primary{background:var(--grad-btn);color:#fff;box-shadow:0 6px 16px rgba(192,38,211,.25)}
-.btn-primary:disabled{background:#c4bfd3;box-shadow:none;cursor:not-allowed}
-.btn-reject{background:#fff;color:var(--navy);border:2px solid var(--navy)}
-.btn-accept{background:var(--grad-btn);color:#fff;border:2px solid transparent}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font-size:17px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn-primary{background:var(--purple);color:#fff;box-shadow:0 6px 16px rgba(122,0,230,.25)}
+.btn-primary:disabled{background:#c9c3d8;box-shadow:none;cursor:not-allowed}
 ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line-height:1.4}
-.notif{display:flex;gap:10px;align-items:center;background:var(--soft);border-radius:14px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--navy)}
-.notif b{color:var(--purple)}
-.notif .dot{width:8px;height:8px;border-radius:50%;background:var(--magenta);flex:0 0 8px}
-.req-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.avatar{width:50px;height:50px;flex:0 0 50px;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff}
-.avatar.personal{border-radius:50%;background:#8b7bb8}
-.avatar.official{border-radius:14px;background:var(--navy)}
-.req-name{font-weight:800;font-size:17px;color:var(--navy)}
-.req-addr{font-size:14px;color:var(--muted);word-break:break-all}
-.amount{text-align:center;padding:14px 0 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:6px}
-.amount small{display:block;color:var(--muted);font-size:13px;margin-bottom:4px}
-.amount strong{font-size:34px;letter-spacing:-.5px;color:var(--navy)}
-.amount strong span{font-size:16px;font-weight:700;color:var(--muted);margin-right:4px}
-.kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
-.kv:last-child{border-bottom:0}
-.kv .k{color:var(--muted);flex:0 0 40%}
-.kv .v{text-align:right;font-weight:600;word-break:break-word;color:var(--navy)}
-.note-official{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
-.mini{display:flex;align-items:center;gap:10px;background:var(--soft-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:16px}
-.mini .avatar{width:38px;height:38px;flex-basis:38px;font-size:14px}
+.check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;line-height:1.4}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--purple);flex:0 0 20px}
+.status{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}
+/* purple header with orange shapes (used on info pages) */
+.hero{position:relative;overflow:hidden;background:var(--grad);color:#fff;padding:18px 18px 36px}
+.hero::before{content:"";position:absolute;left:-60px;top:-40px;width:200px;height:150px;background:var(--orange);opacity:.85;border-radius:40px;transform:rotate(-28deg)}
+.hero > *{position:relative}
+.hero .row{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px}
+.logo .mark{width:30px;height:30px;border-radius:10px;background:#fff;color:var(--purple);display:grid;place-items:center;font-size:14px}
+.pill{font-size:12px;font-weight:600;background:rgba(255,255,255,.2);padding:5px 10px;border-radius:999px}
+.bar{height:5px;background:rgba(255,255,255,.25);border-radius:999px;margin-top:14px;overflow:hidden}
+.bar span{display:block;height:100%;background:#fff;border-radius:999px;transition:width .3s}
+.lift{margin-top:-22px;position:relative}
+.plainbar{height:5px;background:var(--line);border-radius:999px;margin:0 0 16px;overflow:hidden}
+.plainbar span{display:block;height:100%;background:var(--purple);border-radius:999px}
+
+/* ===== Collect-money request screen (matches reference layout) ===== */
+.cm{position:relative;min-height:100vh;overflow:hidden;background:var(--grad);padding:18px 16px 24px;display:flex;flex-direction:column}
+@media (min-width:600px){ .cm{min-height:calc(100vh - 48px)} }
+.cm::before{content:"";position:absolute;left:-140px;top:52%;width:520px;height:420px;background:linear-gradient(160deg,#f7926f,#f26b3a);transform:rotate(28deg);border-radius:60px;opacity:.95}
+.cm::after{content:"";position:absolute;right:-120px;bottom:-80px;width:360px;height:300px;background:#7d1fd6;border-radius:80px;transform:rotate(-30deg);opacity:.9}
+.cm > *{position:relative;z-index:1}
+.cm-top{display:flex;align-items:center;justify-content:center;position:relative;height:52px;color:#fff;font-size:18px;font-weight:600}
+.cm-top .pill{position:absolute;right:0}
+.cm-amount{background:rgba(255,255,255,.12);border-radius:18px;padding:16px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:17px}
+.cm-amount b{font-weight:600;font-size:18px}
+.cm-card{background:#fff;border-radius:18px;padding:14px 14px 14px 16px;display:flex;align-items:center;gap:14px;margin-top:16px;box-shadow:0 6px 18px rgba(30,0,80,.12)}
+.at{width:58px;height:58px;flex:0 0 58px;border-radius:16px;background:#fde6dc;color:var(--orange);display:grid;place-items:center;font-size:30px;font-weight:700}
+.to-lbl{color:var(--muted);font-size:14px}
+.to-name{color:var(--muted);font-size:15px;letter-spacing:.2px;margin:4px 0;text-transform:uppercase;word-break:break-word}
+.to-addr{color:var(--navy);font-size:16px;word-break:break-all}
+.block{margin-left:auto;flex:0 0 auto;border:1px solid #eee;border-radius:12px;padding:8px 10px;text-align:center;color:var(--orange);font-size:14px;background:#fff;cursor:pointer}
+.block .ic{display:block;font-size:22px;line-height:1;margin-bottom:4px}
+.toggle{display:block;margin:16px auto 0;background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:12px;padding:10px 26px;font-size:16px;font-weight:600;cursor:pointer}
+.details{background:#fff;border-radius:18px;padding:6px 18px;margin-top:16px;box-shadow:0 6px 18px rgba(30,0,80,.12)}
+.drow{display:flex;justify-content:space-between;gap:14px;padding:11px 0;font-size:15px}
+.drow .k{color:var(--muted);flex:0 0 auto}
+.drow .v{color:var(--navy);text-align:right;word-break:break-word}
+.drow .v.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.reason{background:#fff;border-radius:18px;padding:16px 18px;margin-top:14px;display:flex;align-items:center;gap:10px;font-size:16px;box-shadow:0 6px 18px rgba(30,0,80,.12)}
+.reason .v{color:var(--muted);margin-left:auto;text-align:right}
+.reason .chev{color:var(--orange);font-weight:700}
+.cm-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:14px;margin-top:auto;padding-top:22px}
+.b-rej{background:var(--lav);color:#8a2be2;border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
+.b-acc{background:#fff;color:var(--navy);border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
+
+/* follow-up / questionnaire */
+.mini{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:14px;padding:10px 12px;margin-bottom:16px}
+.mini .at{width:38px;height:38px;flex-basis:38px;font-size:18px;border-radius:10px}
 .badge{margin-left:auto;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;letter-spacing:.4px}
-.badge.acc{background:#f3e8ff;color:var(--purple)} .badge.rej{background:#e8eaf3;color:var(--navy)}
+.badge.acc{background:#f3e8ff;color:var(--purple)} .badge.rej{background:#fde6dc;color:#c2410c}
 .q{margin-bottom:22px}
 .q-title{font-weight:700;margin-bottom:10px;line-height:1.4;color:var(--navy)}
 .q-hint{font-size:13px;color:var(--muted);margin:-6px 0 10px}
@@ -82,15 +94,13 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
 .err{color:var(--bad);font-size:13px;margin-top:6px;display:none}
 .q.invalid .err{display:block}
 .section-tag{display:inline-block;background:var(--soft);color:var(--purple);font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-size:15px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:90%;text-align:center}
 .debrief-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
 .debrief-item:last-child{border-bottom:0}
 .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px}
 .tag.gen{background:#dcfce7;color:var(--ok)} .tag.fr{background:#ffe4e6;color:var(--bad)}
 .pid{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:800;font-size:18px;letter-spacing:1px;color:var(--purple)}
-.check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;line-height:1.4}
-.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--purple);flex:0 0 20px}
-.status{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}
+/* pre-request phone message */
 .phone{flex:1;min-height:100vh;background:linear-gradient(180deg,#1b1442 0%,#141b3c 100%);padding:48px 16px 24px;display:flex;flex-direction:column;gap:16px}
 .ph-time{color:#fff;text-align:center;font-size:56px;font-weight:300;letter-spacing:1px}
 .ph-label{color:rgba(255,255,255,.65);text-align:center;font-size:13px;margin-top:-10px;margin-bottom:12px}
@@ -112,81 +122,58 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
    ===================================================================== */
 const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",
-  STUDY_VERSION: "v4-messages",
+  STUDY_VERSION: "v5-collectscreen",
   START_BALANCE: 10000,
   ONE_SESSION_PER_DEVICE: true
 };
 
 /* =====================================================================
-   EXPERIMENTAL DESIGN (unchanged from v2)
+   EXPERIMENTAL DESIGN (unchanged)
    8 scenarios = 2x2x2 crossing of urgency x amount x presentation.
-   Each has a GENUINE and a FRAUDULENT version that differ ONLY in the
-   sender-identity cue (wallet address, registered name, history).
-   Per participant: 4 random fraudulent + 4 genuine, random order.
-   Notification condition: every request arrives the same way (in-app
-   notification only), so notification is held constant.
+   Genuine vs fraudulent versions differ ONLY in sender identity
+   (wallet address, registered name, history with this account).
+   Per participant: 4 fraudulent + 4 genuine, random order.
+   expiryMins: how long the request stays valid (urgent = minutes).
+   reason: "Reason for transfer" shown on the request (same in both versions).
    ===================================================================== */
-const NOTIFICATION_CONDITION = "In-app notification only";
 const SCENARIOS = [
-  { id:"S1", label:"Mariam Hassan – Thursday dinner",
-    urgency:"No", amountLevel:"Low", presentation:"Personal",
-    displayName:"Mariam Hassan", initials:"MH", amount:180,
-    note:"Thursday dinner 🍕 your share", expiry:"Expires in 7 days", received:"2 hours ago",
+  { id:"S1", label:"Mariam Hassan – Thursday dinner", urgency:"No", amountLevel:"Low", presentation:"Personal",
+    displayName:"Mariam Hassan", initials:"MH", amount:180, note:"Thursday dinner 🍕 your share", expiryMins:7*24*60, reason:"Shared Expenses",
     genuine:{ address:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED", history:"6 previous transactions · last on 12 Oct" },
     fraud:{   address:"mariam.hasan22@pay", registeredName:"MOHAMED ABDELRAHMAN SAEED", history:"No previous transactions" } },
-  { id:"S2", label:"Book Corner – delivery fee",
-    urgency:"No", amountLevel:"Low", presentation:"Official",
-    displayName:"Book Corner", initials:"BC", amount:35,
-    note:"DELIVERY FEE – ORDER #20417", expiry:"Expires in 7 days", received:"10 minutes ago",
+  { id:"S2", label:"Book Corner – delivery fee", urgency:"No", amountLevel:"Low", presentation:"Official",
+    displayName:"Book Corner", initials:"BC", amount:35, note:"DELIVERY FEE – ORDER #20417", expiryMins:7*24*60, reason:"Purchase of Goods",
     genuine:{ address:"bookcorner@pay", registeredName:"BOOK CORNER BOOKSTORE", history:"2 previous transactions · last on 26 Oct" },
     fraud:{   address:"bookcorner.delivery@pay", registeredName:"MAHMOUD ADEL RAGAB", history:"No previous transactions" } },
-  { id:"S3", label:"Youssef Tarek – money sent by mistake",
-    urgency:"No", amountLevel:"High", presentation:"Personal",
-    displayName:"Youssef Tarek", initials:"YT", amount:1500,
-    note:"sorry, sent you 1,500 by mistake yesterday 🤦‍♂️ can you send it back?", expiry:"Expires in 7 days", received:"1 hour ago",
+  { id:"S3", label:"Youssef Tarek – money sent by mistake", urgency:"No", amountLevel:"High", presentation:"Personal",
+    displayName:"Youssef Tarek", initials:"YT", amount:1500, note:"sorry, sent you 1,500 by mistake yesterday 🤦‍♂️ can you send it back?", expiryMins:7*24*60, reason:"Refund",
     genuine:{ address:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ", history:"You received EGP 1,500 from this account yesterday" },
     fraud:{   address:"youssef.tarek.eg@pay", registeredName:"AHMED SAMIR FATHY", history:"No previous transactions" } },
-  { id:"S4", label:"Nada Housing – apartment deposit",
-    urgency:"No", amountLevel:"High", presentation:"Official",
-    displayName:"Nada Housing Services", initials:"NH", amount:2000,
-    note:"NOVEMBER DEPOSIT – APARTMENT 4B, NASR CITY", expiry:"Expires in 7 days", received:"Yesterday",
+  { id:"S4", label:"Nada Housing – apartment deposit", urgency:"No", amountLevel:"High", presentation:"Official",
+    displayName:"Nada Housing Services", initials:"NH", amount:2000, note:"NOVEMBER DEPOSIT – APARTMENT 4B, NASR CITY", expiryMins:7*24*60, reason:"Rent",
     genuine:{ address:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES", history:"1 previous transaction · last on 1 Oct" },
     fraud:{   address:"nada.housing.office@pay", registeredName:"SHERIF NABIL ABDELHAMID", history:"No previous transactions" } },
-  { id:"S5", label:"Omar Khaled – taxi share",
-    urgency:"Yes", amountLevel:"Low", presentation:"Personal",
-    displayName:"Omar Khaled", initials:"OK", amount:70,
-    note:"taxi share 🚕 please send it NOW, I'm at the cashier and short on balance!!", expiry:"Expires in 10 minutes", received:"Just now",
+  { id:"S5", label:"Omar Khaled – taxi share", urgency:"Yes", amountLevel:"Low", presentation:"Personal",
+    displayName:"Omar Khaled", initials:"OK", amount:70, note:"taxi share 🚕 please send it NOW, I'm at the cashier and short on balance!!", expiryMins:10, reason:"Shared Expenses",
     genuine:{ address:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA", history:"9 previous transactions · last on 20 Oct" },
     fraud:{   address:"omar.khaled.01@pay", registeredName:"AHMED KAMAL IBRAHIM", history:"No previous transactions" } },
-  { id:"S6", label:"City Sports Club – membership",
-    urgency:"Yes", amountLevel:"Low", presentation:"Official",
-    displayName:"City Sports Club", initials:"CS", amount:150,
-    note:"MEMBERSHIP PAYMENT DUE TODAY – ACCESS SUSPENDED AFTER 23:59", expiry:"Expires in 15 minutes", received:"Just now",
+  { id:"S6", label:"City Sports Club – membership", urgency:"Yes", amountLevel:"Low", presentation:"Official",
+    displayName:"City Sports Club", initials:"CS", amount:150, note:"MEMBERSHIP PAYMENT DUE TODAY – ACCESS SUSPENDED AFTER 23:59", expiryMins:15, reason:"Membership Fees",
     genuine:{ address:"city.sports@pay", registeredName:"CITY SPORTS CLUB", history:"5 previous transactions · last on 1 Oct" },
     fraud:{   address:"citysports.club@pay", registeredName:"HAZEM MOHAMED ABDO", history:"No previous transactions" } },
-  { id:"S7", label:"Laila Adel – pharmacy for mom",
-    urgency:"Yes", amountLevel:"High", presentation:"Personal",
-    displayName:"Laila Adel", initials:"LA", amount:1200,
-    note:"at the hospital with mom 😢 need 1,200 for the pharmacy RIGHT NOW please", expiry:"Expires in 10 minutes", received:"Just now",
+  { id:"S7", label:"Laila Adel – pharmacy for mom", urgency:"Yes", amountLevel:"High", presentation:"Personal",
+    displayName:"Laila Adel", initials:"LA", amount:1200, note:"at the hospital with mom 😢 need 1,200 for the pharmacy RIGHT NOW please", expiryMins:10, reason:"Family Support",
     genuine:{ address:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED", history:"14 previous transactions · last on 24 Oct" },
     fraud:{   address:"laila.adel7@pay", registeredName:"KARIM SAMY HELMY", history:"No previous transactions" } },
-  { id:"S8", label:"Sea Breeze Travel Club – Alexandria trip",
-    urgency:"Yes", amountLevel:"High", presentation:"Official",
-    displayName:"Sea Breeze Travel Club", initials:"SB", amount:2450,
-    note:"FINAL NOTICE: ALEXANDRIA TRIP BOOKING CANCELLED UNLESS PAID WITHIN 15 MIN", expiry:"Expires in 15 minutes", received:"Just now",
+  { id:"S8", label:"Sea Breeze Travel Club – Alexandria trip", urgency:"Yes", amountLevel:"High", presentation:"Official",
+    displayName:"Sea Breeze Travel Club", initials:"SB", amount:2450, note:"FINAL NOTICE: ALEXANDRIA TRIP BOOKING CANCELLED UNLESS PAID WITHIN 15 MIN", expiryMins:15, reason:"Travel & Tourism",
     genuine:{ address:"seabreeze.travel@pay", registeredName:"SEA BREEZE TRAVEL CLUB", history:"1 previous transaction · last on 27 Oct" },
     fraud:{   address:"seabreeze.bookings@pay", registeredName:"MAHMOUD FAROUK ZAKI", history:"No previous transactions" } }
 ];
 const N_FRAUD = 4;
 
-/* =====================================================================
-   PRE-REQUEST MESSAGE (social-engineering variable, added in v4)
-   Per participant: 4 of the 8 requests are preceded by a phone message
-   (2 genuine + 2 fraudulent, chosen at random), the other 4 arrive with
-   no message. For a given scenario the message is IDENTICAL in the
-   genuine and fraudulent versions, so the message itself never reveals
-   the answer – only its presence/absence is manipulated.
-   ===================================================================== */
+/* PRE-REQUEST MESSAGE (unchanged): 4 of 8 requests (2 genuine + 2 fraudulent);
+   message text identical in both versions of a scenario. */
 const N_MSG_PER_TRUTH = 2;
 const MESSAGES = {
   S1:{ channel:"WhatsApp", sender:"Mariam Hassan", type:"Bill-split reminder",
@@ -206,85 +193,48 @@ const MESSAGES = {
   S8:{ channel:"SMS", sender:"SeaBreeze", type:"Cancellation threat",
        text:"FINAL NOTICE: Your Alexandria trip booking will be CANCELLED unless EGP 2,450 is paid within 15 minutes. Request sent." }
 };
-const MSG_Q = "Did the message you received before this request influence your decision to accept or reject it?";
-const MSG_OPTIONS = ["Yes, it made me more likely to accept.","Yes, it made me more likely to reject.",
-                     "No, it did not influence my decision.","I am not sure."];
 
-/* =====================================================================
-   PART C — per-request follow-up (replaces the old end-of-study Part C)
-   Each reason has its own binary column (key) and a factor code used
-   for the factor-level Reason_* variables in the Analysis Dataset.
-   ===================================================================== */
-const ACCEPT_Q = "Why did you accept this request?";
-const REJECT_Q = "Why did you reject this request?";
-const ACCEPT_REASONS = [
-  { key:"acc_recognized_sender",  text:"I recognized the sender.",                          factor:"Sender_Name" },
-  { key:"acc_amount_reasonable",  text:"The amount seemed reasonable.",                     factor:"Amount" },
-  { key:"acc_notification",       text:"The notification influenced my decision.",          factor:"Notification" },
-  { key:"acc_note_legitimate",    text:"The note made the request seem legitimate.",        factor:"Note" },
-  { key:"acc_trusted_sender",     text:"I trusted the sender.",                             factor:"Relationship" },
-  { key:"acc_seemed_urgent",      text:"The request seemed urgent.",                        factor:"Urgency" },
-  { key:"acc_familiar_type",      text:"I was familiar with this type of request.",         factor:"Familiarity" },
-  { key:"acc_nothing_suspicious", text:"I did not notice anything suspicious.",             factor:"No_Red_Flags" },
-  { key:"acc_presentation",       text:"The way the request was presented looked genuine.", factor:"Presentation" }
+/* PER-REQUEST DECISION QUESTION (one checklist, multiple selections) */
+const DECISION_Q = "What made you decide to accept or reject this money request?";
+const FACTOR_OPTIONS = [
+  { key:"f_sender_name",      text:"Name of the sender" },
+  { key:"f_notification_sms", text:"Notification/SMS received before the request" },
+  { key:"f_history",          text:"History with this account" },
+  { key:"f_note",             text:"Note attached to the request" },
+  { key:"f_amount",           text:"The amount requested" },
+  { key:"f_urgency",          text:"Urgency of the request" }
 ];
-const REJECT_REASONS = [
-  { key:"rej_unrecognized_sender", text:"I did not recognize the sender.",                       factor:"Sender_Name" },
-  { key:"rej_amount_suspicious",   text:"The amount seemed suspicious.",                         factor:"Amount" },
-  { key:"rej_notification",        text:"The notification made me uncomfortable.",               factor:"Notification" },
-  { key:"rej_note_suspicious",     text:"The note seemed suspicious or unclear.",                factor:"Note" },
-  { key:"rej_distrust_sender",     text:"I did not trust the sender.",                           factor:"Relationship" },
-  { key:"rej_seemed_unusual",      text:"The request seemed unusual.",                           factor:"Unusual" },
-  { key:"rej_timing",              text:"The timing made me suspicious.",                        factor:"Timing" },
-  { key:"rej_uncomfortable",       text:"I did not feel comfortable approving the request.",     factor:"Discomfort" },
-  { key:"rej_urgency",             text:"The urgency of the request made me suspicious.",        factor:"Urgency" },
-  { key:"rej_presentation",        text:"The way the request was presented looked suspicious.",  factor:"Presentation" }
-];
-const FACTORS = ["Notification","Sender_Name","Amount","Note","Relationship","Timing","Urgency","Presentation",
-                 "Familiarity","No_Red_Flags","Unusual","Discomfort"];
 
-/* =====================================================================
-   QUESTIONNAIRE
-   Part D (age) – before the requests.  Parts A & B – after the requests
-   (original placement).  No typed answers anywhere.
-   ===================================================================== */
-const FREQ5 = ["Never","Rarely","Sometimes","Often","Always"];
-const PART_D = { tag:"Part D", title:"Before you begin", questions:[
-  { key:"age_range", type:"single", text:"What is your age range?",
-    options:["Under 18","18–24","25–34","35–44","45–54","55–64","65 or above","Prefer not to say"] }
-]};
+/* QUESTIONNAIRE — all at the end, age is the very last question */
 const POST_SECTIONS = [
-  { tag:"Part A", title:"Your use of digital payment apps", questions:[
-    { key:"A1_usage_frequency", type:"single", text:"How frequently do you use digital payment applications?",
-      options:["Daily","Several times a week","About once a week","A few times a month","Less than once a month"] },
-    { key:"A2_usage_duration", type:"single", text:"How long have you been using digital payment applications?",
-      options:["Less than 6 months","6–12 months","1–2 years","3–5 years","More than 5 years"] },
+  { tag:"Part A", title:"Your use of payment apps", questions:[
+    { key:"A1_instapay_frequency", type:"single", text:"How often do you use InstaPay?",
+      options:["Daily","Weekly","A few times a month"] },
     { key:"A3_transaction_confidence", type:"scale", text:"How confident do you feel when making digital payment transactions?",
       anchors:["Not at all confident","Very confident"] },
-    { key:"A4_suspicious_requests_seen", type:"single", text:"Have you previously encountered suspicious digital payment requests?",
-      options:["Never","Once","A few times","Many times","Not sure"] },
+    { key:"A4_online_scam_experience", type:"single", text:"Have you previously encountered an online payment scam?",
+      options:["No","Yes, but I did not lose money.","Yes, and I lost money."] },
     { key:"A5_scam_experience", type:"single", text:"Have you ever experienced or encountered a digital payment scam?",
       options:["No","Yes – someone tried, but I did not lose money","Yes – I lost money","Prefer not to say"] }
   ]},
   { tag:"Part B", title:"Your usual habits", questions:[
-    { key:"B1_verify_sender", type:"single", text:"Do you normally verify the sender's identity before accepting a payment request?", options:FREQ5 },
+    { key:"B1_verify_sender", type:"single", text:"Do you normally verify the sender's identity before accepting a payment request?",
+      options:["Yes","No"] },
     { key:"B2_amount_importance", type:"scale", text:"How important is the requested amount when you decide whether to accept a payment request?",
-      anchors:["Not at all important","Extremely important"] },
-    { key:"B3_urgency_influence", type:"single", text:"How does urgent wording (for example “pay now” or a short deadline) affect your willingness to accept a payment request?",
-      options:["Makes me much less willing","Makes me somewhat less willing","No effect","Makes me somewhat more willing","Makes me much more willing"] },
-    { key:"B4_inspect_details", type:"single", text:"Do you normally inspect the information in a payment request before making a decision?", options:FREQ5 },
-    { key:"B5_detection_confidence", type:"scale", text:"How confident are you in distinguishing genuine payment requests from fraudulent ones?",
-      anchors:["Not at all confident","Very confident"] }
+      anchors:["Not at all important","Extremely important"] }
+  ]},
+  { tag:"Last question", title:"About you", questions:[
+    { key:"age_range", type:"single", text:"What is your age range?",
+      options:["Under 18","18–30","30–40","40–50","50+"] }
   ]}
 ];
-// progress units: Part D (1) + 8 requests + Part A (1) + Part B (1)
-const TOTAL_UNITS = 1 + SCENARIOS.length + POST_SECTIONS.length;
+const TOTAL_UNITS = SCENARIOS.length + POST_SECTIONS.length;
 
 /* =====================================================================
    STATE + HELPERS
    ===================================================================== */
 const S = { pid:null, start:null, fraudSet:[], msgSet:[], order:[], idx:0, shownAt:0, decidedAt:0, msgShownAt:0, msgViewMs:"",
-            pending:null, responses:[], answers:{}, balance:CONFIG.START_BALANCE, section:0, end:null };
+            cur:null, pending:null, responses:[], answers:{}, balance:CONFIG.START_BALANCE, section:0, end:null };
 function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 function load(k){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } }
 function makeId(){
@@ -297,9 +247,15 @@ function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 function fmt(n){ return n.toLocaleString("en-US"); }
 function nowIso(){ return new Date().toISOString(); }
 function deviceType(){ const ua=navigator.userAgent||""; return /iPhone|iPad|iPod/i.test(ua)?"iOS":/Android/i.test(ua)?"Android":/Mobi/i.test(ua)?"Other mobile":"Desktop"; }
+function refNumber(){ let s=String(1+Math.floor(Math.random()*9)); for(let i=0;i<11;i++) s+=Math.floor(Math.random()*10); return s; }
+function fmtExpiry(d){
+  const p=n=>String(n).padStart(2,"0"); let h=d.getHours(); const ap=h>=12?"PM":"AM"; h=h%12||12;
+  return `${p(d.getDate())}-${p(d.getMonth()+1)}-${d.getFullYear()} ${p(h)}:${p(d.getMinutes())}:${p(d.getSeconds())} ${ap}`;
+}
 const $app=document.getElementById("app");
 function scrollTop(){ window.scrollTo(0,0); }
 function pct(units){ return Math.round(100*units/TOTAL_UNITS); }
+function toast(t){ const el=document.createElement("div"); el.className="toast"; el.textContent=t; document.body.appendChild(el); setTimeout(()=>el.remove(),2200); }
 
 /* =====================================================================
    SAVING (queue + retry + on-device backup; each request saved at once)
@@ -358,27 +314,25 @@ function participantRow(status){
     end_time:S.end||"", duration_sec:S.end?Math.round((new Date(S.end)-new Date(S.start))/1000):"",
     consent:"Yes", completion_status:status, device:deviceType(),
     fraudulent_scenarios:S.fraudSet.join(";"), message_scenarios:S.msgSet.join(";"), presentation_order:S.order.join(";"), ...counts() };
-  [PART_D,...POST_SECTIONS].forEach(sec=>sec.questions.forEach(q=>{ const v=S.answers[q.key]; row[q.key]=v===undefined?"":v; }));
+  POST_SECTIONS.forEach(sec=>sec.questions.forEach(q=>{ const v=S.answers[q.key]; row[q.key]=v===undefined?"":v; }));
   return row;
 }
 
 /* =====================================================================
    SCREENS
    ===================================================================== */
-function topbar(label, units){
-  return `<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div>${label?`<div class="pill">${label}</div>`:""}</div>
-  <div class="balance"><small>Available balance</small><div>EGP ${fmt(S.balance)}</div></div>
+function hero(label, units){
+  return `<div class="hero"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div>${label?`<div class="pill">${label}</div>`:""}</div>
   ${units!==undefined?`<div class="bar"><span style="width:${pct(units)}%"></span></div>`:""}</div>`;
 }
 function screenAlreadyDone(){
   $app.innerHTML=`<div class="content"><div class="card"><h1>Thank you</h1><p>This device has already completed the study. Each person can take part once.</p></div></div>`;
 }
 function screenConsent(){
-  $app.innerHTML=`<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div></div></div>
-  <div class="content lift"><div class="card">
+  $app.innerHTML=hero("")+`<div class="content lift"><div class="card">
     <h1>Payment Decisions Study</h1>
     <p>This academic study looks at how people decide on money requests in digital payment apps. It takes about 8–10 minutes.</p>
-    <p><b>What you will do:</b> answer one short question, then receive 8 money requests in a simulated payment app. For each one, choose <b>Accept</b> or <b>Reject</b> and tick the reasons for your choice. A few short questions follow at the end.</p>
+    <p><b>What you will do:</b> receive 8 money requests in a simulated payment app. For each one, choose <b>Accept</b> or <b>Reject</b> and tick what made you decide. A few short questions follow at the end.</p>
     <p><b>No real money</b> is involved and you will <b>never</b> be asked for a PIN, password or any banking details. You will not need to type anything.</p>
     <p><b>Your privacy:</b> participation is anonymous. You get a random code; we do not collect your name, phone number or contact details. Answers are used for research analysis only.</p>
     <p>Taking part is voluntary and you may stop at any time by closing the page.</p>
@@ -394,12 +348,13 @@ function screenConsent(){
     S.order=shuffle(SCENARIOS.map(s=>s.id));
     const gen=SCENARIOS.map(s=>s.id).filter(id=>!S.fraudSet.includes(id));
     S.msgSet=shuffle(S.fraudSet).slice(0,N_MSG_PER_TRUTH).concat(shuffle(gen).slice(0,N_MSG_PER_TRUTH)).sort();
-    screenQuestions(PART_D, 0, ()=>{ send({participant:participantRow("Started")}); screenBriefing(); });
+    send({participant:participantRow("Started")});
+    screenBriefing();
   };
   scrollTop();
 }
 function screenBriefing(){
-  $app.innerHTML=topbar("Ready",1)+`<div class="content lift"><div class="card">
+  $app.innerHTML=hero("Ready",0)+`<div class="content lift"><div class="card">
     <h1>Your role</h1>
     <p>In this study you are <b>Nour Adel</b>, a user of this payment app. This is what happened in Nour's life recently:</p>
     <ul class="story">
@@ -438,21 +393,32 @@ function currentScenario(){
 }
 function screenRequest(){
   const { sc, v }=currentScenario(); const official=sc.presentation==="Official";
-  $app.innerHTML=topbar(`Request ${S.idx+1} of ${SCENARIOS.length}`, 1+S.idx)+`<div class="content lift">
-  <div class="card">
-    <div class="notif"><span class="dot"></span><span>You have received a money request from <b>${esc(sc.displayName)}</b> · ${esc(sc.received)}</span></div>
-    <div class="req-head"><div class="avatar ${official?"official":"personal"}">${esc(sc.initials)}</div>
-      <div><div class="req-name">${esc(sc.displayName)}</div><div class="req-addr">${esc(v.address)}</div></div></div>
-    <div class="amount"><small>is requesting</small><strong><span>EGP</span>${fmt(sc.amount)}</strong></div>
-    <div class="kv"><div class="k">Registered account name</div><div class="v">${esc(v.registeredName)}</div></div>
-    <div class="kv"><div class="k">Note</div><div class="v ${official?"note-official":""}">${esc(sc.note)}</div></div>
-    <div class="kv"><div class="k">History with this account</div><div class="v">${esc(v.history)}</div></div>
-    <div class="kv"><div class="k">Request validity</div><div class="v">${esc(sc.expiry)}</div></div>
-    <div class="kv"><div class="k">Pay from</div><div class="v">nour.adel@pay</div></div>
-    <div class="kv"><div class="k">Fees</div><div class="v">EGP 0</div></div>
-  </div>
-  <div class="btn-row"><button class="btn btn-reject" id="rej">REJECT</button><button class="btn btn-accept" id="acc">ACCEPT</button></div></div>`;
+  S.cur={ ref:refNumber(), expiry:fmtExpiry(new Date(Date.now()+sc.expiryMins*60000)), collapsed:0, block:0 };
+  $app.innerHTML=`<div class="cm">
+    <div class="cm-top">Collect Money<span class="pill">${S.idx+1} of ${SCENARIOS.length}</span></div>
+    <div class="cm-amount"><span>Total Amount</span><b>${fmt(sc.amount)} EGP</b></div>
+    <div class="cm-card">
+      <div class="at">@</div>
+      <div style="min-width:0"><div class="to-lbl">To</div>
+        <div class="to-name">${esc(v.registeredName)}</div>
+        <div class="to-addr">${esc(v.address)}</div></div>
+      <button class="block" id="blk" type="button"><span class="ic">⊘</span>Block</button>
+    </div>
+    <button class="toggle" id="tog" type="button">Less Details ⌃</button>
+    <div class="details" id="det">
+      <div class="drow"><span class="k">Reference Number</span><span class="v">${S.cur.ref}</span></div>
+      <div class="drow"><span class="k">Expiry Date</span><span class="v">${S.cur.expiry}</span></div>
+      <div class="drow"><span class="k">Note</span><span class="v ${official?"mono":""}">${esc(sc.note)}</span></div>
+      <div class="drow"><span class="k">History with this account</span><span class="v">${esc(v.history)}</span></div>
+    </div>
+    <div class="reason"><span>Reason for transfer</span><span class="v">${esc(sc.reason)}</span><span class="chev">⌄</span></div>
+    <div class="cm-btns"><button class="b-rej" id="rej">Reject</button><button class="b-acc" id="acc">Accept</button></div>
+  </div>`;
   S.shownAt=performance.now();
+  const det=document.getElementById("det"), tog=document.getElementById("tog");
+  tog.onclick=()=>{ const open=det.style.display!=="none"; det.style.display=open?"none":"block";
+    tog.textContent=open?"More Details ⌄":"Less Details ⌃"; if(open) S.cur.collapsed=1; };
+  document.getElementById("blk").onclick=()=>{ S.cur.block=1; toast("Blocking is not part of this study – please choose Accept or Reject."); };
   document.getElementById("acc").onclick=()=>decide("Accept");
   document.getElementById("rej").onclick=()=>decide("Reject");
   scrollTop();
@@ -462,61 +428,50 @@ function decide(decision){
   const { sc, isFraud, v }=currentScenario();
   const truth=isFraud?"Fraudulent":"Genuine";
   const correct=(truth==="Genuine"&&decision==="Accept")||(truth==="Fraudulent"&&decision==="Reject");
-  S.pending={ sc, v, isFraud, truth, decision, correct, rt, decision_time:nowIso(),
+  S.pending={ sc, v, isFraud, truth, decision, correct, rt, decision_time:nowIso(), cur:S.cur,
     msgShown:S.msgSet.includes(sc.id), msgViewMs:S.msgViewMs,
     error_type: correct?"None":(truth==="Fraudulent"?"False acceptance":"False rejection") };
   if(decision==="Accept") S.balance-=sc.amount;
   screenReason();
 }
 function screenReason(){
-  const P=S.pending, acc=P.decision==="Accept", list=acc?ACCEPT_REASONS:REJECT_REASONS, official=P.sc.presentation==="Official";
-  $app.innerHTML=topbar(`Request ${S.idx+1} of ${SCENARIOS.length}`, 1+S.idx+0.5)+`<div class="content lift"><div class="card">
-    <div class="mini"><div class="avatar ${official?"official":"personal"}">${esc(P.sc.initials)}</div>
-      <div><b>${esc(P.sc.displayName)}</b><div class="small muted">EGP ${fmt(P.sc.amount)}</div></div>
+  const P=S.pending, acc=P.decision==="Accept";
+  $app.innerHTML=hero(`Request ${S.idx+1} of ${SCENARIOS.length}`, S.idx+0.5)+`<div class="content lift"><div class="card">
+    <div class="mini"><div class="at">@</div>
+      <div><b>${esc(P.v.address)}</b><div class="small muted">${fmt(P.sc.amount)} EGP</div></div>
       <span class="badge ${acc?"acc":"rej"}">${acc?"ACCEPTED":"REJECTED"}</span></div>
-    <div class="q" data-key="reasons"><div class="q-title">${acc?ACCEPT_Q:REJECT_Q}</div>
+    <div class="q" data-key="factors"><div class="q-title">${esc(DECISION_Q)}</div>
       <div class="q-hint">Select all that apply.</div>
-      ${list.map(o=>`<label class="opt"><input type="checkbox" value="${o.key}"><span>${esc(o.text)}</span></label>`).join("")}
-      <div class="err">Please select at least one reason.</div></div>
-    ${P.msgShown?`<div class="q" data-key="msg"><div class="q-title">${esc(MSG_Q)}</div>
-      ${MSG_OPTIONS.map(o=>`<label class="opt"><input type="radio" name="msg_influence" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`:""}
+      ${FACTOR_OPTIONS.map(o=>`<label class="opt"><input type="checkbox" value="${o.key}"><span>${esc(o.text)}</span></label>`).join("")}
+      <div class="err">Please select at least one.</div></div>
     <button class="btn btn-primary" id="next" disabled>Continue</button>
   </div></div>`;
-  const boxes=[...document.querySelectorAll('.q[data-key="reasons"] .opt input')], radios=[...document.querySelectorAll('input[name="msg_influence"]')], next=document.getElementById("next");
-  const upd=()=>{
-    document.querySelectorAll(".opt").forEach(l=>l.classList.toggle("sel",l.querySelector("input").checked));
-    next.disabled=!boxes.some(x=>x.checked) || (P.msgShown && !radios.some(r=>r.checked));
-  };
-  boxes.concat(radios).forEach(b=>b.onchange=upd);
+  const boxes=[...document.querySelectorAll('.q[data-key="factors"] .opt input')], next=document.getElementById("next");
+  boxes.forEach(b=>b.onchange=()=>{ b.closest(".opt").classList.toggle("sel",b.checked); next.disabled=!boxes.some(x=>x.checked); });
   next.onclick=()=>{
     const chosen=boxes.filter(b=>b.checked).map(b=>b.value); if(!chosen.length) return;
-    const r=radios.find(x=>x.checked); if(P.msgShown && !r) return;
-    next.disabled=true; saveResponse(chosen, r?r.value:"");
+    next.disabled=true; saveResponse(chosen);
     S.idx++; if(S.idx<SCENARIOS.length) nextRequest(); else { S.section=0; screenPost(); }
   };
   scrollTop();
 }
-function saveResponse(chosen, msgAnswer){
-  const P=S.pending, acc=P.decision==="Accept", list=acc?ACCEPT_REASONS:REJECT_REASONS, other=acc?REJECT_REASONS:ACCEPT_REASONS;
+function saveResponse(chosen){
+  const P=S.pending, m=P.msgShown?MESSAGES[P.sc.id]:null;
   const row={
     timestamp:nowIso(), participant_id:S.pid, request_id:P.sc.id, response_id:`${S.pid}_${P.sc.id}`, position:S.idx+1,
     scenario_label:P.sc.label, ground_truth:P.truth, decision:P.decision, correct:P.correct?1:0, error_type:P.error_type,
     decision_time:P.decision_time, response_time_ms:P.rt, reason_time_ms:Math.round(performance.now()-S.decidedAt),
-    followup_question:acc?ACCEPT_Q:REJECT_Q,
-    selected_reasons:list.filter(o=>chosen.includes(o.key)).map(o=>o.text).join(" | "), n_reasons:chosen.length,
+    decision_question:DECISION_Q,
+    selected_factors:FACTOR_OPTIONS.filter(o=>chosen.includes(o.key)).map(o=>o.text).join(" | "), n_factors:chosen.length,
     display_name:P.sc.displayName, wallet_address:P.v.address, registered_name:P.v.registeredName,
     history_with_sender:P.v.history, sender_identity_consistent:P.isFraud?"No":"Yes",
     amount_egp:P.sc.amount, amount_level:P.sc.amountLevel, urgency:P.sc.urgency, presentation:P.sc.presentation,
-    notification_condition:NOTIFICATION_CONDITION, note:P.sc.note, expiry:P.sc.expiry, age_range:S.answers.age_range||"",
-    message_shown:P.msgShown?"Yes":"No",
-    message_type:P.msgShown?MESSAGES[P.sc.id].type:"", message_channel:P.msgShown?MESSAGES[P.sc.id].channel:"",
-    message_sender:P.msgShown?MESSAGES[P.sc.id].sender:"", message_text:P.msgShown?MESSAGES[P.sc.id].text:"",
-    message_view_ms:P.msgShown?P.msgViewMs:"",
-    message_influence:P.msgShown?msgAnswer:"Not asked (no message)"
+    note:P.sc.note, reason_for_transfer:P.sc.reason, reference_number:P.cur.ref, expiry_date:P.cur.expiry,
+    details_collapsed:P.cur.collapsed, block_clicked:P.cur.block,
+    message_shown:P.msgShown?"Yes":"No", message_type:m?m.type:"", message_channel:m?m.channel:"",
+    message_sender:m?m.sender:"", message_text:m?m.text:"", message_view_ms:m?P.msgViewMs:""
   };
-  list.forEach(o=>row[o.key]=chosen.includes(o.key)?1:0);
-  other.forEach(o=>row[o.key]="");               // not shown for this decision
-  FACTORS.forEach(f=>row["Reason_"+f]=list.some(o=>o.factor===f&&chosen.includes(o.key))?1:0);
+  FACTOR_OPTIONS.forEach(o=>row[o.key]=chosen.includes(o.key)?1:0);
   S.responses.push(row);
   send({ participant:participantRow("In progress"), responses:[row] });
 }
@@ -553,9 +508,9 @@ function screenQuestions(sec, units, onDone, btnLabel){
 }
 function screenPost(){
   const sec={...POST_SECTIONS[S.section]};
-  if(S.section===0) sec.intro="Thank you – the payment requests are finished. Two short pages follow.";
+  if(S.section===0) sec.intro="Thank you – the payment requests are finished. A few short questions follow.";
   const isLast=S.section===POST_SECTIONS.length-1;
-  screenQuestions(sec, 1+SCENARIOS.length+S.section, async ()=>{
+  screenQuestions(sec, SCENARIOS.length+S.section, async ()=>{
     if(!isLast){ S.section++; screenPost(); return; }
     const btn=document.getElementById("next"); btn.disabled=true; btn.textContent="Saving…";
     S.end=nowIso();
@@ -578,20 +533,18 @@ function screenDebrief(saveResult){
   const msg=saveResult==="ok"||saveResult==="unconfirmed"?"Your answers have been saved."
     :saveResult==="no-url"?"Researcher note: no Google Sheets link is configured, so data was kept on this device only."
     :"Your answers are stored on this device and will be sent automatically when the connection returns. Please keep this page open for a moment.";
-  $app.innerHTML=`<div class="topbar"><div class="row"><div class="logo"><div class="mark">◆</div>Pay</div><div class="pill">Completed</div></div>
-    <div class="bar"><span style="width:100%"></span></div></div>
-  <div class="content lift"><div class="card"><h1>Thank you!</h1><p>${msg}</p>
+  $app.innerHTML=hero("Completed",TOTAL_UNITS)+`<div class="content lift"><div class="card"><h1>Thank you!</h1><p>${msg}</p>
     <p class="small muted">Your anonymous participant code</p><p class="pid">${esc(S.pid)}</p>
     <p class="small muted">Keep this code if you later want your data removed.</p></div>
   <div class="card"><h2>What this study was about</h2>
-    <p>Some of the requests you saw were <b>fraudulent</b>. The study looks at which cues (sender, amount, urgency, wording, look) lead people to pay fake requests or to refuse real ones.</p>
-    <p>In this study the reliable cue was always the <b>sender's identity</b>: the exact wallet address, the registered account name and your history with that account. Urgency, amount and an official look appeared in genuine and fraudulent requests alike.</p>
+    <p>Some of the requests you saw were <b>fraudulent</b>. The study looks at which cues (sender, amount, urgency, wording, messages before the request) lead people to pay fake requests or to refuse real ones.</p>
+    <p>In this study the reliable cue was always the <b>sender's identity</b>: the exact address, the registered account name and your history with that account. Urgency, amount, messages and an official look appeared in genuine and fraudulent requests alike.</p>
     <p>You answered <b>${c.n_correct} of ${SCENARIOS.length}</b> correctly.</p>${items}</div>
   <div class="card"><h2>How to protect yourself</h2><ul class="story">
     <li>Check the registered account name and the exact address, character by character, before paying.</li>
-    <li>Be careful with requests from accounts you have never paid before, even if the display name looks familiar.</li>
-    <li>Treat pressure (“pay now”, short deadlines, emergencies) as a reason to slow down and confirm by calling the person.</li>
-    <li>A genuine company will never ask you to pay to “verify” or “unlock” your account.</li></ul></div></div>`;
+    <li>Be careful with requests from accounts you have never paid before, even if the name looks familiar.</li>
+    <li>A message saying "this is my new/old number" is a classic scam opener – call the person on the number you know.</li>
+    <li>Treat pressure (“pay now”, short deadlines, emergencies) as a reason to slow down.</li></ul></div></div>`;
   scrollTop();
 }
 
