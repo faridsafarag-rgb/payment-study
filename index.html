@@ -122,7 +122,7 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
    ===================================================================== */
 const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",
-  STUDY_VERSION: "v5-collectscreen",
+  STUDY_VERSION: "v6",
   START_BALANCE: 10000,
   ONE_SESSION_PER_DEVICE: true
 };
@@ -213,9 +213,7 @@ const POST_SECTIONS = [
     { key:"A3_transaction_confidence", type:"scale", text:"How confident do you feel when making digital payment transactions?",
       anchors:["Not at all confident","Very confident"] },
     { key:"A4_online_scam_experience", type:"single", text:"Have you previously encountered an online payment scam?",
-      options:["No","Yes, but I did not lose money.","Yes, and I lost money."] },
-    { key:"A5_scam_experience", type:"single", text:"Have you ever experienced or encountered a digital payment scam?",
-      options:["No","Yes – someone tried, but I did not lose money","Yes – I lost money","Prefer not to say"] }
+      options:["No","Yes, but I did not lose money.","Yes, and I lost money."] }
   ]},
   { tag:"Part B", title:"Your usual habits", questions:[
     { key:"B1_verify_sender", type:"single", text:"Do you normally verify the sender's identity before accepting a payment request?",
