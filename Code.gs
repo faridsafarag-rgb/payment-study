@@ -1,5 +1,5 @@
 /**
- * Payment Decisions Study – Google Sheets receiver (v8)
+ * Payment Decisions Study – Google Sheets receiver (v9)
  * Paste into Extensions > Apps Script of the results spreadsheet, then
  * Deploy > Manage deployments > Edit > Version: New version > Deploy
  * (keeps the same /exec link).
@@ -12,18 +12,21 @@
  * If a tab still has the headers of an older version, it is upgraded when empty,
  * or renamed "<tab> (old)" when it already holds data, so nothing is ever mixed.
  *
- * v7/v8: the experiment is identical for every participant (S1–S8 in order;
- * S2, S3, S5, S8 fraudulent; messages before S1, S3, S6, S8). v8 adds an
- * evidence record to each request; registered names always match. Column names
- * are unchanged; ground_truth stores "Genuine" for legitimate requests. A1_instapay_frequency now stores the answer to
+ * v9: the experiment is identical for every participant (S1–S8 in order).
+ * Answer key: S1, S4, S5, S6, S7 legitimate (Accept); S2, S3, S8 fraudulent
+ * (Reject). Messages before S1, S2, S3, S5, S6, S8. Column names are unchanged;
+ * ground_truth stores "Genuine" for legitimate requests. A1_instapay_frequency now stores the answer to
  * "How often do you use online payment platforms?" (key kept for compatibility).
  */
 
-const VERSION = 'v8';
+const VERSION = 'v9';
 const SUMMARY_SHEET  = 'Participant Summary';
 const RESPONSE_SHEET = 'Request Responses';
 const ANALYSIS_SHEET = 'Analysis Dataset';
 const DASHBOARD_SHEET = 'Dashboard';
+// Fixed answer key (v9) – used for the per-request table on the Dashboard
+const ANSWER_KEY = [['S1','Legitimate','Accept'],['S2','Fraudulent','Reject'],['S3','Fraudulent','Reject'],['S4','Legitimate','Accept'],
+                    ['S5','Legitimate','Accept'],['S6','Legitimate','Accept'],['S7','Legitimate','Accept'],['S8','Fraudulent','Reject']];
 
 const SUMMARY_HEADERS = [
   'participant_id','study_version','start_time','end_time','duration_sec','consent','completion_status','device',
@@ -185,11 +188,17 @@ function ensureDashboard_(ss) {
     ['What made people decide (share of decisions)', 'When accepted', 'When rejected', 'All']
   ];
   FACTOR_VARS.forEach((v, i) => { const c = col(v); rows.push([FACTOR_LABELS[i], avg(c, D + ',1'), avg(c, D + ',0'), avg(c, '')]); });
+  rows.push(['', '', '', '']);
+  rows.push(['Per request (5 legitimate, 3 fraudulent)', 'Correct answer', 'Accepted', 'Correct']);
+  const RQ = col('Request_ID');
+  ANSWER_KEY.forEach(k => rows.push([k[0] + ' – ' + k[1], k[2], avg(D, RQ + ',"' + k[0] + '"'), avg(C, RQ + ',"' + k[0] + '"')]));
+  rows.push(['Average score per participant (out of 8)', "=IFERROR(AVERAGEIFS(" + scol('n_correct') + "," + scol('completion_status') + ',"Completed"),"–")', '', '']);
   sh.getRange(1, 1, rows.length, 4).setValues(rows);
   sh.getRange(1, 6, 1, 1).setValues([[VERSION]]);
   sh.getRange('A1').setFontWeight('bold').setFontSize(14);
   sh.getRange('A6:D6').setFontWeight('bold'); sh.getRange('A13:D13').setFontWeight('bold');
   sh.getRange('B7:D11').setNumberFormat('0%'); sh.getRange('B14:D19').setNumberFormat('0%');
+  sh.getRange('A21:D21').setFontWeight('bold'); sh.getRange('C22:D29').setNumberFormat('0%'); sh.getRange('B30').setNumberFormat('0.0');
   sh.setColumnWidth(1, 430); sh.setColumnWidths(2, 3, 130);
 }
 
