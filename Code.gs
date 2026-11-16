@@ -1,5 +1,5 @@
 /**
- * Payment Decisions Study – Google Sheets receiver (v10)
+ * Payment Decisions Study – Google Sheets receiver (v11)
  * Paste into Extensions > Apps Script of the results spreadsheet, then
  * Deploy > Manage deployments > Edit > Version: New version > Deploy
  * (keeps the same /exec link).
@@ -17,11 +17,13 @@
  * (Reject). Messages before S1, S2, S3, S5, S6, S8. Column names are unchanged;
  * ground_truth stores "Genuine" for legitimate requests. From v10,
  * history_with_sender is a number (count of previous transactions, 0 = none).
+ * From v11 the screen shows a short dated text (e.g. "6 previous transactions ·
+ * last on 12 Oct", "0 transactions since 1 Oct"); the sheet still stores the count.
  * A1_instapay_frequency now stores the answer to
  * "How often do you use online payment platforms?" (key kept for compatibility).
  */
 
-const VERSION = 'v10';
+const VERSION = 'v11';
 const SUMMARY_SHEET  = 'Participant Summary';
 const RESPONSE_SHEET = 'Request Responses';
 const ANALYSIS_SHEET = 'Analysis Dataset';

@@ -65,7 +65,7 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
 .details{background:#fff;border-radius:18px;padding:6px 18px;margin-top:16px;box-shadow:0 6px 18px rgba(30,0,80,.12)}
 .drow{display:flex;justify-content:space-between;gap:14px;padding:11px 0;font-size:15px}
 .drow .k{color:var(--muted);flex:0 0 auto}
-.drow .v{color:var(--navy);text-align:right;word-break:break-word}
+.drow .v{color:var(--navy);text-align:right;overflow-wrap:break-word;min-width:0;flex:1 1 auto}
 .drow.stack{flex-direction:column;gap:4px}
 .drow.stack .v{text-align:left}
 .drow .v.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
@@ -73,8 +73,8 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
 .reason .v{color:var(--muted);margin-left:auto;text-align:right}
 .reason .chev{color:var(--orange);font-weight:700}
 .cm-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:14px;margin-top:auto;padding-top:22px}
-.b-rej{background:var(--lav);color:#8a2be2;border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
-.b-acc{background:#fff;color:var(--navy);border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
+.b-rej{min-height:56px;touch-action:manipulation;background:var(--lav);color:#8a2be2;border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
+.b-acc{min-height:56px;touch-action:manipulation;background:#fff;color:var(--navy);border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
 
 /* follow-up / questionnaire */
 .mini{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:14px;padding:10px 12px;margin-bottom:16px}
@@ -130,7 +130,7 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
    ===================================================================== */
 const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",
-  STUDY_VERSION: "v10",
+  STUDY_VERSION: "v11",
   START_BALANCE: 10000,
   ONE_SESSION_PER_DEVICE: true
 };
@@ -150,43 +150,43 @@ const SCENARIOS = [
   { id:"S1", truth:"Legitimate", ref:"735617685694", label:"Mariam Hassan – Thursday dinner", urgency:"No", amountLevel:"Low", presentation:"Personal",
     displayName:"Mariam Hassan", initials:"MH", amount:180, note:"Thursday dinner 🍕 your share", expiryMins:7*24*60, reason:"Shared Expenses",
     address:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED",
-    history:6,
+    history:"6 previous transactions · last on 12 Oct", historyCount:6,
     explain:"Mariam messaged from her saved number, and the request came from her usual account (6 previous transactions). As your notes said, you agreed to split Thursday's dinner and your EGP 180 share was still unpaid." },
   { id:"S2", truth:"Fraudulent", ref:"482093156720", label:"Salma Nabil – workshop handouts", urgency:"No", amountLevel:"Low", presentation:"Personal",
     displayName:"Salma Nabil", initials:"SN", amount:35, note:"EGP 35 for your share of the printed handouts from yesterday's workshop.", expiryMins:7*24*60, reason:"Shared Expenses",
     address:"salma.nabil@pay", registeredName:"SALMA NABIL",
-    history:0,
-    explain:"The message came from a new number, from an account you had never paid (0 transactions). Your notes said the handouts were included in the workshop fee you already paid, and that Salma still uses her saved number – so there was nothing to pay and you could confirm with her there." },
+    history:"0 transactions since 1 Oct", historyCount:0,
+    explain:"The message came from a new number, from an account with 0 transactions since 1 Oct. Your notes said the handouts were included in the workshop fee you already paid, and that Salma still uses her saved number – so there was nothing to pay and you could confirm with her there." },
   { id:"S3", truth:"Fraudulent", ref:"619274380513", label:"Youssef Tarek – money sent by mistake", urgency:"No", amountLevel:"High", presentation:"Personal",
     displayName:"Youssef Tarek", initials:"YT", amount:1500, note:"sorry, sent you 1,500 by mistake yesterday 🤦‍♂️ can you send it back?", expiryMins:7*24*60, reason:"Refund",
     address:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ",
-    history:0,
-    explain:"The request asks you to return EGP 1,500 that Youssef says he sent yesterday, from an account with 0 previous transactions. Your notes said your incoming transfers showed nothing from Youssef, so there was nothing to send back." },
+    history:"0 transactions since 1 Oct", historyCount:0,
+    explain:"The request asks you to return EGP 1,500 that Youssef says he sent yesterday, from an account with 0 transactions since 1 Oct. Your notes said your incoming transfers showed nothing from Youssef, so there was nothing to send back." },
   { id:"S4", truth:"Legitimate", ref:"350861927442", label:"Nada Housing – apartment deposit", urgency:"No", amountLevel:"High", presentation:"Official",
     displayName:"Nada Housing Services", initials:"NH", amount:2000, note:"NOVEMBER DEPOSIT – APARTMENT 4B, NASR CITY", expiryMins:7*24*60, reason:"Rent",
     address:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES",
-    history:1,
-    explain:"The request came from the housing agency's usual account (1 previous transaction – your October deposit). As your notes said, your EGP 2,000 November deposit was due and not paid yet." },
+    history:"1 previous transaction · last on 1 Oct", historyCount:1,
+    explain:"The request came from the housing agency's usual account (1 previous transaction, on 1 Oct – your October deposit). As your notes said, your EGP 2,000 November deposit was due and not paid yet." },
   { id:"S5", truth:"Legitimate", ref:"894172603358", label:"Omar Khaled – cinema ticket", urgency:"No", amountLevel:"Low", presentation:"Personal",
     displayName:"Omar Khaled", initials:"OK", amount:70, note:"EGP 70 for your cinema ticket for tonight's showing.", expiryMins:24*60, reason:"Entertainment",
     address:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA",
-    history:9,
+    history:"9 previous transactions · last on 20 Oct", historyCount:9,
     explain:"Omar messaged from his saved number, and the request came from his usual account (9 previous transactions). As your notes said, you asked him to book your cinema ticket, agreed to pay EGP 70 and hadn't paid yet." },
   { id:"S6", truth:"Legitimate", ref:"207548316979", label:"City Sports Club – membership", urgency:"Yes", amountLevel:"Low", presentation:"Official",
     displayName:"City Sports Club", initials:"CS", amount:150, note:"MEMBERSHIP PAYMENT DUE TODAY – ACCESS SUSPENDED AFTER 23:59", expiryMins:15, reason:"Membership Fees",
     address:"city.sports@pay", registeredName:"CITY SPORTS CLUB",
-    history:5,
+    history:"5 previous transactions · last on 1 Oct", historyCount:5,
     explain:"This was your club's usual monthly renewal from the account you pay every month (5 previous transactions). As your notes said, your EGP 150 membership fee was due today, so the urgent wording was genuine." },
   { id:"S7", truth:"Legitimate", ref:"563820941167", label:"Laila Adel – pharmacy for mom", urgency:"Yes", amountLevel:"High", presentation:"Personal",
     displayName:"Laila Adel", initials:"LA", amount:1200, note:"at the hospital with mom 😢 need 1,200 for the pharmacy RIGHT NOW please", expiryMins:10, reason:"Family Support",
     address:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED",
-    history:14,
+    history:"14 previous transactions · last on 24 Oct", historyCount:14,
     explain:"The request came from your sister's usual account (14 previous transactions). As your notes said, Laila had shared the EGP 1,200 pharmacy bill in your family chat and you hadn't paid yet." },
   { id:"S8", truth:"Fraudulent", ref:"928305174486", label:"Layla Adel – urgent request (impersonation)", urgency:"Yes", amountLevel:"High", presentation:"Personal",
     displayName:"Layla Adel", initials:"LA", amount:2450, note:"I need the money urgently. Please send it now.", expiryMins:15, reason:"Family Support",
     address:"layla777@pay", registeredName:"LAYLA ADEL",
-    history:0,
-    explain:"An account with no transaction history (0 previous transactions) claimed to be your sister Layla and pressed you to pay EGP 2,450 immediately, promising to explain later. You could have verified the request by contacting Layla through her saved number." }
+    history:"0 transactions since 1 Oct", historyCount:0,
+    explain:"An account with no transaction history (0 transactions since 1 Oct) claimed to be your sister Layla and pressed you to pay EGP 2,450 immediately, promising to explain later. You could have verified the request by contacting Layla through her saved number." }
 ];
 const N_FRAUD = 3;
 const FIXED_ORDER = ["S1","S2","S3","S4","S5","S6","S7","S8"];
@@ -420,7 +420,7 @@ function screenRequest(){
       <div class="drow"><span class="k">Reference Number</span><span class="v">${S.cur.ref}</span></div>
       <div class="drow"><span class="k">Expiry Date</span><span class="v">${S.cur.expiry}</span></div>
       <div class="drow stack"><span class="k">Note</span><span class="v ${official?"mono":""}">${esc(sc.note)}</span></div>
-      <div class="drow"><span class="k">History with this account</span><span class="v">${esc(v.history)}</span></div>
+      <div class="drow stack"><span class="k">History with this account</span><span class="v">${esc(v.history)}</span></div>
     </div>
     <div class="reason"><span>Reason for transfer</span><span class="v">${esc(sc.reason)}</span><span class="chev">⌄</span></div>
     <div class="cm-btns"><button class="b-rej" id="rej">Reject</button><button class="b-acc" id="acc">Accept</button></div>
@@ -475,7 +475,7 @@ function saveResponse(chosen){
     decision_question:DECISION_Q,
     selected_factors:FACTOR_OPTIONS.filter(o=>chosen.includes(o.key)).map(o=>o.text).join(" | "), n_factors:chosen.length,
     display_name:P.sc.displayName, wallet_address:P.v.address, registered_name:P.v.registeredName,
-    history_with_sender:P.v.history, sender_identity_consistent:"Yes",
+    history_with_sender:P.v.historyCount, sender_identity_consistent:"Yes",
     amount_egp:P.sc.amount, amount_level:P.sc.amountLevel, urgency:P.sc.urgency, presentation:P.sc.presentation,
     note:P.sc.note, reason_for_transfer:P.sc.reason, reference_number:P.cur.ref, expiry_date:P.cur.expiry,
     details_collapsed:P.cur.collapsed, block_clicked:P.cur.block,
