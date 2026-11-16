@@ -1,5 +1,5 @@
 /**
- * Payment Decisions Study – Google Sheets receiver (v7)
+ * Payment Decisions Study – Google Sheets receiver (v8)
  * Paste into Extensions > Apps Script of the results spreadsheet, then
  * Deploy > Manage deployments > Edit > Version: New version > Deploy
  * (keeps the same /exec link).
@@ -12,13 +12,14 @@
  * If a tab still has the headers of an older version, it is upgraded when empty,
  * or renamed "<tab> (old)" when it already holds data, so nothing is ever mixed.
  *
- * v7: the experiment is identical for every participant (S1–S8 in order;
- * S2, S3, S5, S8 fraudulent; messages before S1, S3, S6, S8). Column names
- * are unchanged. A1_instapay_frequency now stores the answer to
+ * v7/v8: the experiment is identical for every participant (S1–S8 in order;
+ * S2, S3, S5, S8 fraudulent; messages before S1, S3, S6, S8). v8 adds an
+ * evidence record to each request; registered names always match. Column names
+ * are unchanged; ground_truth stores "Genuine" for legitimate requests. A1_instapay_frequency now stores the answer to
  * "How often do you use online payment platforms?" (key kept for compatibility).
  */
 
-const VERSION = 'v7';
+const VERSION = 'v8';
 const SUMMARY_SHEET  = 'Participant Summary';
 const RESPONSE_SHEET = 'Request Responses';
 const ANALYSIS_SHEET = 'Analysis Dataset';

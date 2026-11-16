@@ -70,6 +70,10 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
 .reason{background:#fff;border-radius:18px;padding:16px 18px;margin-top:14px;display:flex;align-items:center;gap:10px;font-size:16px;box-shadow:0 6px 18px rgba(30,0,80,.12)}
 .reason .v{color:var(--muted);margin-left:auto;text-align:right}
 .reason .chev{color:var(--orange);font-weight:700}
+.evid{background:#fff;border-radius:18px;padding:12px 18px 8px;margin-top:14px;box-shadow:0 6px 18px rgba(30,0,80,.12)}
+.evid-h{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--navy);font-size:15px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.evid-h .ic{width:26px;height:26px;border-radius:8px;background:#fde6dc;color:var(--orange);display:grid;place-items:center;font-size:14px}
+.evid .drow{padding:8px 0}
 .cm-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:14px;margin-top:auto;padding-top:22px}
 .b-rej{background:var(--lav);color:#8a2be2;border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
 .b-acc{background:#fff;color:var(--navy);border:0;border-radius:18px;padding:18px;font-size:18px;font-weight:500;cursor:pointer}
@@ -95,10 +99,16 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
 .q.invalid .err{display:block}
 .section-tag{display:inline-block;background:var(--soft);color:var(--purple);font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.3px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:90%;text-align:center}
-.debrief-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
-.debrief-item:last-child{border-bottom:0}
-.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px}
-.tag.gen{background:#dcfce7;color:var(--ok)} .tag.fr{background:#ffe4e6;color:var(--bad)}
+.result{border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;border:1.5px solid}
+.result.res-ok{background:#ecfdf3;border-color:#16a34a}
+.result.res-bad{background:#fef2f2;border-color:#dc2626}
+.res-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.res-label{flex:0 0 auto;font-weight:800;font-size:13px;padding:3px 10px;border-radius:999px;color:#fff}
+.res-ok .res-label{background:#16a34a} .res-bad .res-label{background:#dc2626}
+.res-choices{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0 6px;color:var(--navy)}
+.res-why{line-height:1.45;color:#374151}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-right:4px;background:#e5e7eb;color:var(--navy)}
+.tag.gen,.tag.fr{background:#e5e7eb;color:var(--navy)}
 .pid{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:800;font-size:18px;letter-spacing:1px;color:var(--purple)}
 /* pre-request phone message */
 .phone{flex:1;min-height:100vh;background:linear-gradient(180deg,#1b1442 0%,#141b3c 100%);padding:48px 16px 24px;display:flex;flex-direction:column;gap:16px}
@@ -122,65 +132,73 @@ ul.story{padding-left:18px;margin:6px 0 10px} ul.story li{margin-bottom:6px;line
    ===================================================================== */
 const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwJ2ar1jaI1aijDkuGHl28Zc-_J7lQLPGZkjvRHI6J0pCRROxcP6j-Nw2H52u0l7tqE/exec",
-  STUDY_VERSION: "v7-fixed",
+  STUDY_VERSION: "v8-evidence",
   START_BALANCE: 10000,
   ONE_SESSION_PER_DEVICE: true
 };
 
 /* =====================================================================
-   EXPERIMENTAL DESIGN (unchanged)
-   8 scenarios = 2x2x2 crossing of urgency x amount x presentation.
-   Genuine vs fraudulent versions differ ONLY in sender identity
-   (wallet address, registered name, history with this account).
-   Per participant: 4 fraudulent + 4 genuine, random order.
-   expiryMins: how long the request stays valid (urgent = minutes).
-   reason: "Reason for transfer" shown on the request (same in both versions).
+   EXPERIMENTAL DESIGN (v8) – identical for every participant
+   Order S1..S8. Answer key (scored on Accept/Reject only):
+     S1 Legitimate→Accept  S2 Fraudulent→Reject  S3 Fraudulent→Reject  S4 Legitimate→Accept
+     S5 Fraudulent→Reject  S6 Legitimate→Accept  S7 Legitimate→Accept  S8 Fraudulent→Reject
+   Every registered name matches the displayed sender/organisation.
+   Each request shows a piece of EVIDENCE (receipt, transaction record,
+   booking/membership record). For fraudulent requests the evidence clearly
+   contradicts the request; for legitimate ones it confirms sender, amount
+   and reason. Fraudulent requests also come from a lookalike address with
+   no account history (secondary cue).
+   2x2x2 crossing of urgency x amount x presentation; the fraudulent set and
+   the message set are each balanced on all three factors.
+   expiryMins: fixed validity duration; reason: "Reason for transfer".
    ===================================================================== */
 const SCENARIOS = [
-  { id:"S1", ref:"735617685694", label:"Mariam Hassan – Thursday dinner", urgency:"No", amountLevel:"Low", presentation:"Personal",
+  { id:"S1", truth:"Legitimate", ref:"735617685694", label:"Mariam Hassan – Thursday dinner", urgency:"No", amountLevel:"Low", presentation:"Personal",
     displayName:"Mariam Hassan", initials:"MH", amount:180, note:"Thursday dinner 🍕 your share", expiryMins:7*24*60, reason:"Shared Expenses",
-    genuine:{ address:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED", history:"6 previous transactions · last on 12 Oct" },
-    fraud:{   address:"mariam.hasan22@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED", history:"No previous transactions" } },
-  { id:"S2", ref:"482093156720", label:"Book Corner – delivery fee", urgency:"No", amountLevel:"Low", presentation:"Official",
+    address:"mariam.hassan@pay", realAddress:"mariam.hassan@pay", registeredName:"MARIAM HASSAN MAHMOUD ELSAYED", history:"6 previous transactions · last on 12 Oct",
+    evidence:{ title:"Shared bill – Thursday dinner", rows:[["Paid by","Mariam Hassan (mariam.hassan@pay)"],["Total bill","EGP 1,080"],["Split between","6 friends"],["Your share","EGP 180"],["Your status","Not paid yet"]] },
+    explain:"The shared bill confirms it: Mariam paid the EGP 1,080 dinner bill for 6 friends, your share is EGP 180 and you had not paid it yet. The request came from her real account, which you have paid before." },
+  { id:"S2", truth:"Fraudulent", ref:"482093156720", label:"Book Corner – delivery fee", urgency:"No", amountLevel:"Low", presentation:"Official",
     displayName:"Book Corner", initials:"BC", amount:35, note:"DELIVERY FEE – ORDER #20417", expiryMins:7*24*60, reason:"Purchase of Goods",
-    genuine:{ address:"bookcorner@pay", registeredName:"BOOK CORNER BOOKSTORE", history:"2 previous transactions · last on 26 Oct" },
-    fraud:{   address:"bookcorner.delivery@pay", registeredName:"BOOK CORNER BOOKSTORE", history:"No previous transactions" } },
-  { id:"S3", ref:"619274380513", label:"Youssef Tarek – money sent by mistake", urgency:"No", amountLevel:"High", presentation:"Personal",
+    address:"bookcorner.delivery@pay", realAddress:"bookcorner@pay", registeredName:"BOOK CORNER BOOKSTORE", history:"No previous transactions",
+    evidence:{ title:"Order receipt – Book Corner", rows:[["Order","#20417"],["Book","EGP 245"],["Delivery","FREE"],["Amount paid","EGP 245"],["Status","Paid in full"]] },
+    explain:"The order receipt shows order #20417 was already paid in full and delivery was free, so there was no EGP 35 delivery fee to pay. The request also came from a lookalike address (the real one is bookcorner@pay) with no account history." },
+  { id:"S3", truth:"Fraudulent", ref:"619274380513", label:"Youssef Tarek – money sent by mistake", urgency:"No", amountLevel:"High", presentation:"Personal",
     displayName:"Youssef Tarek", initials:"YT", amount:1500, note:"sorry, sent you 1,500 by mistake yesterday 🤦‍♂️ can you send it back?", expiryMins:7*24*60, reason:"Refund",
-    genuine:{ address:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ", history:"You received EGP 1,500 from this account yesterday" },
-    fraud:{   address:"youssef.tarek.eg@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ", history:"No previous transactions" } },
-  { id:"S4", ref:"350861927442", label:"Nada Housing – apartment deposit", urgency:"No", amountLevel:"High", presentation:"Official",
+    address:"youssef.tarek.eg@pay", realAddress:"youssef.tarek@pay", registeredName:"YOUSSEF TAREK ABDELAZIZ", history:"No previous transactions",
+    evidence:{ title:"Your incoming transfers", rows:[["Today","No incoming transfers"],["Yesterday","No incoming transfers"],["2 days ago","Ahmed Fawzy · EGP 300"],["5 days ago","Salary · EGP 8,500"]] },
+    explain:"Your incoming transfers show nothing received yesterday, and no EGP 1,500 from Youssef at all, so there was no money to send back. The request also came from a lookalike address (the real one is youssef.tarek@pay) with no account history." },
+  { id:"S4", truth:"Legitimate", ref:"350861927442", label:"Nada Housing – apartment deposit", urgency:"No", amountLevel:"High", presentation:"Official",
     displayName:"Nada Housing Services", initials:"NH", amount:2000, note:"NOVEMBER DEPOSIT – APARTMENT 4B, NASR CITY", expiryMins:7*24*60, reason:"Rent",
-    genuine:{ address:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES", history:"1 previous transaction · last on 1 Oct" },
-    fraud:{   address:"nada.housing.office@pay", registeredName:"NADA HOUSING SERVICES", history:"No previous transactions" } },
-  { id:"S5", ref:"894172603358", label:"Omar Khaled – taxi share", urgency:"Yes", amountLevel:"Low", presentation:"Personal",
+    address:"nada.housing@pay", realAddress:"nada.housing@pay", registeredName:"NADA HOUSING SERVICES", history:"1 previous transaction · last on 1 Oct",
+    evidence:{ title:"Rental agreement – Apartment 4B, Nasr City", rows:[["Agency","Nada Housing Services"],["Pay to","nada.housing@pay"],["Monthly payment","EGP 2,000"],["November","Due · not paid yet"]] },
+    explain:"The rental agreement confirms it: you pay Nada Housing Services EGP 2,000 a month to nada.housing@pay, and November was due and unpaid. The request came from that same account, which you paid last month." },
+  { id:"S5", truth:"Fraudulent", ref:"894172603358", label:"Omar Khaled – taxi share", urgency:"Yes", amountLevel:"Low", presentation:"Personal",
     displayName:"Omar Khaled", initials:"OK", amount:70, note:"taxi share 🚕 please send it NOW, I'm at the cashier and short on balance!!", expiryMins:10, reason:"Shared Expenses",
-    genuine:{ address:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA", history:"9 previous transactions · last on 20 Oct" },
-    fraud:{   address:"omar.khaled.01@pay", registeredName:"OMAR KHALED MOSTAFA", history:"No previous transactions" } },
-  { id:"S6", ref:"207548316979", label:"City Sports Club – membership", urgency:"Yes", amountLevel:"Low", presentation:"Official",
+    address:"omar.khaled.01@pay", realAddress:"omar.khaled@pay", registeredName:"OMAR KHALED MOSTAFA", history:"No previous transactions",
+    evidence:{ title:"Payment receipt", rows:[["Paid to","Omar Khaled (omar.khaled@pay)"],["Amount","EGP 70"],["For","Taxi share – today's ride 🚕"],["Status","✓ Completed · today"]] },
+    explain:"The payment receipt shows you had already paid Omar EGP 70 for today's taxi ride, so this request asked you to pay for the same ride twice. It also came from a lookalike address (the real one is omar.khaled@pay) with no account history." },
+  { id:"S6", truth:"Legitimate", ref:"207548316979", label:"City Sports Club – membership", urgency:"Yes", amountLevel:"Low", presentation:"Official",
     displayName:"City Sports Club", initials:"CS", amount:150, note:"MEMBERSHIP PAYMENT DUE TODAY – ACCESS SUSPENDED AFTER 23:59", expiryMins:15, reason:"Membership Fees",
-    genuine:{ address:"city.sports@pay", registeredName:"CITY SPORTS CLUB", history:"5 previous transactions · last on 1 Oct" },
-    fraud:{   address:"citysports.club@pay", registeredName:"CITY SPORTS CLUB", history:"No previous transactions" } },
-  { id:"S7", ref:"563820941167", label:"Laila Adel – pharmacy for mom", urgency:"Yes", amountLevel:"High", presentation:"Personal",
+    address:"city.sports@pay", realAddress:"city.sports@pay", registeredName:"CITY SPORTS CLUB", history:"5 previous transactions · last on 1 Oct",
+    evidence:{ title:"Membership record – City Sports Club", rows:[["Member","Nour Adel"],["Monthly fee","EGP 150"],["Due date","Today"],["Status","Not paid yet"]] },
+    explain:"The membership record confirms it: your EGP 150 monthly fee was due today and unpaid. The urgent wording was real, and the request came from the club's own account, which you have paid before." },
+  { id:"S7", truth:"Legitimate", ref:"563820941167", label:"Laila Adel – pharmacy for mom", urgency:"Yes", amountLevel:"High", presentation:"Personal",
     displayName:"Laila Adel", initials:"LA", amount:1200, note:"at the hospital with mom 😢 need 1,200 for the pharmacy RIGHT NOW please", expiryMins:10, reason:"Family Support",
-    genuine:{ address:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED", history:"14 previous transactions · last on 24 Oct" },
-    fraud:{   address:"laila.adel7@pay", registeredName:"LAILA ADEL MOHAMED", history:"No previous transactions" } },
-  { id:"S8", ref:"928305174486", label:"Sea Breeze Travel Club – Alexandria trip", urgency:"Yes", amountLevel:"High", presentation:"Official",
+    address:"laila.adel@pay", realAddress:"laila.adel@pay", registeredName:"LAILA ADEL MOHAMED", history:"14 previous transactions · last on 24 Oct",
+    evidence:{ title:"Pharmacy invoice (sent by Laila)", rows:[["Pharmacy","City Hospital Pharmacy"],["Patient","Mrs. Adel"],["Total","EGP 1,200"],["Paid by","Laila Adel – awaiting payment"]] },
+    explain:"The pharmacy invoice confirms it: your mother's medicine cost EGP 1,200 and Laila was paying for it. The request came from your sister's real account, which you use often." },
+  { id:"S8", truth:"Fraudulent", ref:"928305174486", label:"Sea Breeze Travel Club – Alexandria trip", urgency:"Yes", amountLevel:"High", presentation:"Official",
     displayName:"Sea Breeze Travel Club", initials:"SB", amount:2450, note:"FINAL NOTICE: ALEXANDRIA TRIP BOOKING CANCELLED UNLESS PAID WITHIN 15 MIN", expiryMins:15, reason:"Travel & Tourism",
-    genuine:{ address:"seabreeze.travel@pay", registeredName:"SEA BREEZE TRAVEL CLUB", history:"1 previous transaction · last on 27 Oct" },
-    fraud:{   address:"seabreeze.bookings@pay", registeredName:"SEA BREEZE TRAVEL CLUB", history:"No previous transactions" } }
+    address:"seabreeze.bookings@pay", realAddress:"seabreeze.travel@pay", registeredName:"SEA BREEZE TRAVEL CLUB", history:"No previous transactions",
+    evidence:{ title:"Booking record – Sea Breeze Travel Club", rows:[["Trip","Alexandria weekend"],["Booking status","CANCELLED"],["Balance due","EGP 0"]] },
+    explain:"The booking record shows the reservation was already cancelled and the balance due was EGP 0, so there was nothing to pay to keep it active. The request also came from a lookalike address (the real one is seabreeze.travel@pay) with no account history." }
 ];
 const N_FRAUD = 4;
-
-/* FIXED VERSION (v7): every participant sees exactly the same experiment.
-   Order S1..S8; S2, S3, S5, S8 are fraudulent (lookalike address + no history);
-   S1, S4, S6, S7 are genuine. Pre-request messages before S1, S3, S6, S8
-   (2 genuine + 2 fraudulent). Scoring key: Reject = correct for fraudulent,
-   Accept = correct for genuine. Nothing is randomised. */
 const FIXED_ORDER = ["S1","S2","S3","S4","S5","S6","S7","S8"];
-const FIXED_FRAUD = ["S2","S3","S5","S8"];
+const FIXED_FRAUD = SCENARIOS.filter(s=>s.truth==="Fraudulent").map(s=>s.id);   // S2, S3, S5, S8
 const FIXED_MSG   = ["S1","S3","S6","S8"];
-const SCORING_KEY = Object.fromEntries(FIXED_ORDER.map(id=>[id, FIXED_FRAUD.includes(id)?"Reject":"Accept"]));
+const SCORING_KEY = Object.fromEntries(SCENARIOS.map(s=>[s.id, s.truth==="Fraudulent"?"Reject":"Accept"]));
 
 /* PRE-REQUEST MESSAGE (unchanged): 4 of 8 requests (2 genuine + 2 fraudulent);
    message text identical in both versions of a scenario. */
@@ -391,8 +409,8 @@ function screenMessage(){
   scrollTop();
 }
 function currentScenario(){
-  const sc=SCENARIOS.find(s=>s.id===S.order[S.idx]); const isFraud=S.fraudSet.includes(sc.id);
-  return { sc, isFraud, v:isFraud?sc.fraud:sc.genuine };
+  const sc=SCENARIOS.find(s=>s.id===S.order[S.idx]);
+  return { sc, isFraud:sc.truth==="Fraudulent", v:sc };
 }
 function screenRequest(){
   const { sc, v }=currentScenario(); const official=sc.presentation==="Official";
@@ -414,6 +432,8 @@ function screenRequest(){
       <div class="drow"><span class="k">Note</span><span class="v ${official?"mono":""}">${esc(sc.note)}</span></div>
       <div class="drow"><span class="k">History with this account</span><span class="v">${esc(v.history)}</span></div>
     </div>
+    <div class="evid" id="evid"><div class="evid-h"><span class="ic">🧾</span>${esc(sc.evidence.title)}</div>
+      ${sc.evidence.rows.map(r=>`<div class="drow"><span class="k">${esc(r[0])}</span><span class="v">${esc(r[1])}</span></div>`).join("")}</div>
     <div class="reason"><span>Reason for transfer</span><span class="v">${esc(sc.reason)}</span><span class="chev">⌄</span></div>
     <div class="cm-btns"><button class="b-rej" id="rej">Reject</button><button class="b-acc" id="acc">Accept</button></div>
   </div>`;
@@ -429,7 +449,7 @@ function screenRequest(){
 function decide(decision){
   const rt=Math.round(performance.now()-S.shownAt); S.decidedAt=performance.now();
   const { sc, isFraud, v }=currentScenario();
-  const truth=isFraud?"Fraudulent":"Genuine";
+  const truth=sc.truth==="Fraudulent"?"Fraudulent":"Genuine";   // stored label kept for Sheets compatibility
   const correct=decision===SCORING_KEY[sc.id];   // same key for everyone
   S.pending={ sc, v, isFraud, truth, decision, correct, rt, decision_time:nowIso(), cur:S.cur,
     msgShown:S.msgSet.includes(sc.id), msgViewMs:S.msgViewMs,
@@ -524,13 +544,12 @@ function screenPost(){
 }
 function screenDebrief(saveResult){
   const items=S.responses.map(d=>{
-    const sc=SCENARIOS.find(s=>s.id===d.request_id), gen=d.ground_truth==="Genuine";
-    const why=gen
-      ? `Genuine – the correct answer was <b>Accept</b>. The address <b>${esc(sc.genuine.address)}</b> is the real account, and your history showed: ${esc(sc.genuine.history)}.`
-      : `Fraudulent – the correct answer was <b>Reject</b>. The registered name looked right, but the address <b>${esc(sc.fraud.address)}</b> is a lookalike of the real account (${esc(sc.genuine.address)}), and the history showed <b>no previous transactions</b> with it.`;
-    return `<div class="debrief-item"><b>Request ${d.position}: ${esc(sc.displayName)} – EGP ${fmt(sc.amount)}</b>
-      <span class="tag ${gen?"gen":"fr"}">${gen?"Genuine":"Fraudulent"}</span><br>
-      <span class="muted">You chose ${d.decision} ${d.correct?"✓ correct":"✗ incorrect"}</span><br>${why}</div>`;
+    const sc=SCENARIOS.find(s=>s.id===d.request_id), ok=d.correct===1;
+    return `<div class="result ${ok?"res-ok":"res-bad"}" data-id="${sc.id}">
+      <div class="res-top"><b>Request ${d.position}: ${esc(sc.displayName)} – EGP ${fmt(sc.amount)}</b>
+        <span class="res-label">${ok?"✓ Correct":"✗ Incorrect"}</span></div>
+      <div class="res-choices"><span>Your choice: <b>${esc(d.decision)}</b></span><span>Correct choice: <b>${SCORING_KEY[sc.id]}</b></span></div>
+      <div class="res-why"><span class="tag ${sc.truth==="Fraudulent"?"fr":"gen"}">${sc.truth}</span> ${esc(sc.explain)}</div></div>`;
   }).join("");
   const c=counts();
   const msg=saveResult==="ok"||saveResult==="unconfirmed"?"Your answers have been saved."
@@ -541,10 +560,11 @@ function screenDebrief(saveResult){
     <p class="small muted">Keep this code if you later want your data removed.</p></div>
   <div class="card"><h2>What this study was about</h2>
     <p>Some of the requests you saw were <b>fraudulent</b>. The study looks at which cues (sender, amount, urgency, wording, messages before the request) lead people to pay fake requests or to refuse real ones.</p>
-    <p>In every fraudulent request the <b>registered name looked correct</b> – scammers can copy a name. The reliable cues were the <b>exact wallet address</b> (a lookalike of the real one, e.g. an extra letter, number or word) and the <b>history with this account</b> (no previous transactions). Urgency, amount, messages and an official look appeared in genuine and fraudulent requests alike.</p>
-    <p>You answered <b>${c.n_correct} of ${SCENARIOS.length}</b> correctly.</p>${items}</div>
+    <p>Every request showed the <b>correct registered name</b> – scammers can copy a name. The reliable cue was the <b>record shown with each request</b>: for legitimate requests it confirmed the sender, the amount and the reason; for fraudulent ones it <b>contradicted</b> the request (already paid, free delivery, no transfer received, booking already cancelled). Fraudulent requests also came from a lookalike address with no account history. Urgency, amount, messages and an official look appeared in legitimate and fraudulent requests alike.</p>
+    <p class="score">Your score: <b>${c.n_correct} of ${SCENARIOS.length}</b> decisions correct.</p>${items}</div>
   <div class="card"><h2>How to protect yourself</h2><ul class="story">
-    <li>Don't rely on the name alone – it can be copied. Check the exact address, character by character, before paying.</li>
+    <li>Don't rely on the name alone – it can be copied. Before paying, check your own records: receipts, bookings and your transaction history.</li>
+    <li>Check the exact address, character by character.</li>
     <li>Look at your history with the account: a request from an account you have never dealt with is a warning sign, even if the name looks familiar.</li>
     <li>A message saying "this is my new/old number" is a classic scam opener – call the person on the number you know.</li>
     <li>Treat pressure (“pay now”, short deadlines, emergencies) as a reason to slow down.</li></ul></div></div>`;
